@@ -1,0 +1,6 @@
+{
+  "name": "NammaFix AI",
+  "description": "NammaFix AI is a Gemini-powered civic resolution layer that turns local issue reports into verified, prioritized, routed, and trackable community action.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

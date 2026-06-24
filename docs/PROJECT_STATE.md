@@ -1,0 +1,112 @@
+# NammaFix AI — Project State (agent onboarding)
+
+> Read this first. It is the fastest way for an IDE agent to understand what this repo is,
+> how to run it, and what is / isn't built. For the build roadmap see [PLAN.md](PLAN.md);
+> for *why* things are the way they are see [DECISIONS.md](DECISIONS.md).
+
+Last reviewed: 2026-06-24.
+
+## What this is
+
+**NammaFix AI** — a Gemini-powered civic issue resolution platform for **Vibe2Ship 2026**,
+problem statement *"Community Hero – Hyperlocal Problem Solver"*. Citizens report local civic
+issues (pothole, leak, streetlight, garbage, drain); Gemini turns each into a structured
+**AI Evidence Packet**; the community verifies; an admin prioritizes and routes; closure is
+verified with before/after images; Civic Karma + an impact dashboard track contribution.
+
+The product story (and demo spine):
+`Photo → AI Evidence Packet → Duplicate Check → Community Verification → Resolver Copilot → Status Timeline → Closure Proof → Civic Karma → Impact Dashboard`
+
+## Stack
+
+- **React 19 + Vite 6**, **Tailwind CSS v4** (`@theme` tokens in `src/index.css`, no tailwind.config).
+- **Express** server (`server.ts`) with Vite middleware in dev — single full-stack process.
+- **Gemini** via `@google/genai`, model `gemini-2.5-flash` (multimodal).
+- `motion` (Framer Motion successor) for animation, `lucide-react` for icons.
+- TypeScript. No test framework set up.
+
+## Run it
+
+```bash
+npm install
+# .env must contain GEMINI_API_KEY="..." (Google AI Studio key, starts with AIza or AQ.)
+npm run dev            # tsx server.ts -> http://localhost:3000
+PORT=5180 npm run dev  # PORT env is honored (see server.ts)
+npm run build          # vite build + esbuild bundles server.cjs into dist/
+npm run lint           # tsc --noEmit
+```
+
+- Without a real `GEMINI_API_KEY` the server runs in **SIMULATED AI Mode** (deterministic mock
+  AI responses) — fine for UI work, no Gemini calls made.
+- Data is **in-memory**, seeded on boot from `src/data/mockReports.ts`. It resets every restart.
+
+## File map
+
+```
+index.html                      Vite entry
+server.ts                       Express app + all /api routes + Gemini calls + in-memory `database`
+vite.config.ts
+src/
+  main.tsx                      Renders <Root/>
+  Root.tsx                      View switch: Landing  <->  App (dashboard). No backend logic.
+  App.tsx                       The dashboard app (ops queue, case view, timeline, stats, tabs).
+                                Accepts optional props: initialTab, startReporting, onHome.
+  index.css                     Tailwind v4 @theme: civic palette + Anek/Mukta/Honk fonts + keyframes
+  types.ts                      Report, User, StatusEvent, Verification, Cluster, Mission, AI output types
+  data/mockReports.ts           Seed: initialReports/Users/StatusEvents/Verifications/Missions
+  components/
+    Header.tsx                  Top bar; logo is a Home button (onHome prop)
+    Footer.tsx
+    ReportIssueView.tsx         Citizen report form -> POST /api/reports (the "magic moment")
+    ActiveCaseView.tsx          Report detail: evidence packet, timeline, verify, copilot, closure UI
+    CommunityMapView.tsx        Map/list of reports
+    ImpactStats.tsx             Impact dashboard cards (GET /api/stats)
+  landing/                      The Bharat Civic Folk-Tech landing page (added 2026-06-24)
+    Landing.tsx                 Assembles all 8 sections; CTAs call onEnter -> deep-links into App
+    DoodleHero.tsx              Hero illustration. SVG by default; renders <img> if `src` is set.
+    FolkPatternBackground.tsx   Low-contrast seamless folk pattern (SVG <pattern>)
+    EvidencePacketPreview.tsx   Municipal docket card (centerpiece)
+    CivicFlow.tsx               The pipeline as a stamp-labelled conveyor
+    KarmaBadge.tsx              Passbook stamp badge
+    StatusStamp.tsx             Rubber-stamp status label
+    ImpactPreview.tsx           Ward-health bento
+    DoodleIcons.tsx             12 civic doodle SVG icons + PaisleyDivider
+    assets.ts                   heroImage swap point (undefined => SVG hero; URL => raster)
+docs/                           This folder
+```
+
+## API surface (all in `server.ts`)
+
+| Method | Route | Gemini? | Purpose |
+|---|---|---|---|
+| GET  | `/api/reports` | – | list reports |
+| GET  | `/api/reports/:id` | – | report + its timeline + verifications |
+| POST | `/api/reports` | ✅ image+text → JSON | create report, generate **AI Evidence Packet** |
+| POST | `/api/reports/:id/verify` | – | community verification (confirm/flag), karma, badges |
+| POST | `/api/reports/:id/copilot` | ✅ | **Resolver Copilot** routing note |
+| POST | `/api/reports/:id/update-status` | – | move status, log timeline event |
+| POST | `/api/reports/:id/close` | ✅ before/after | **closure verification** |
+| GET  | `/api/stats` | ✅ | impact insight summary |
+| GET  | `/api/users` | – | users |
+
+## Status snapshot
+
+**Working:** landing page; citizen report → Evidence Packet; resolver copilot; before/after
+closure verify; impact stats; verification + karma + badges + missions; status timeline;
+ops queue with filters; map/list view. Gemini key is live.
+
+**Known gaps / weak spots:**
+- **Not deployed via Google AI Studio yet** — the mandatory submission requirement. Untested.
+- **Not git-initialized**; no GitHub remote yet.
+- **Duplicate detection is cosmetic** — there is UI/labels and `Cluster`/`clusterId` types, but no
+  real `checkDuplicates()` runs on submit. Listed as P1 in the plan.
+- **Gemini JSON parsing** has limited fallback if the model returns malformed JSON (top risk).
+- In-memory store resets on restart (by design — see DECISIONS).
+
+## Gotchas
+
+- Tailwind v4: colors/fonts come from `@theme` in `index.css`, **not** a config file. Custom
+  utilities exist: `bg-cream`, `text-indigoc`, `text-saffron`, `font-display`, `font-honk`, etc.
+- The dashboard (`App.tsx`) is a fixed full-height `h-screen overflow-hidden` layout; the landing
+  page is a normal scrolling page. `Root.tsx` swaps between them.
+- HMR WebSocket uses port 24678; running two dev servers at once collides on it.

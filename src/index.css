@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;850;900&family=JetBrains+Mono:wght@400;500;700;800&family=Anek+Latin:wght@400;500;600;700;800&family=Mukta:wght@400;500;600;700;800&family=Honk&family=Noto+Sans:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Bharat Civic Folk-Tech display + body type. Noto Sans = multilingual fallback. */
+  --font-display: "Anek Latin", "Noto Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Mukta", "Noto Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-honk: "Honk", system-ui, cursive;
+
+  /* Warm Indian civic palette — exposed as Tailwind color utilities (bg-cream, text-saffron, ...) */
+  --color-cream: #FFF8E7;
+  --color-turmeric: #FFF4C7;
+  --color-indigoc: #243B73;   /* Civic Indigo — base structure */
+  --color-ink: #3A1F1B;       /* Ink Brown — hand-drawn outlines */
+  --color-saffron: #F97316;   /* CTAs / urgent accents */
+  --color-marigold: #FACC15;  /* highlights */
+  --color-sindoor: #D72638;   /* critical alerts */
+  --color-peacock: #00A6A6;   /* map pins / validation */
+  --color-lotus: #E83E8C;     /* badge / mission accents */
+  --color-leaf: #2E7D32;      /* verified / resolved */
+  --color-concrete: #E5E1D8;  /* borders / neutral UI */
+}
+
+/* ---- Micro-interaction keyframes (used lightly: floating pins, stamp reveal, line draw, glow) ---- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-spin-slow { animation: spin 8s linear infinite; }
+
+@keyframes folkFloat {
+  0%, 100% { transform: translateY(0) rotate(var(--tw-rotate, 0)); }
+  50% { transform: translateY(-7px) rotate(var(--tw-rotate, 0)); }
+}
+.animate-folk-float { animation: folkFloat 4s ease-in-out infinite; }
+
+@keyframes pinGlow {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(249, 115, 22, 0)); }
+  50% { filter: drop-shadow(0 0 7px rgba(249, 115, 22, 0.7)); }
+}
+.animate-pin-glow { animation: pinGlow 2.4s ease-in-out infinite; }
+
+@keyframes stampReveal {
+  0% { opacity: 0; transform: rotate(-18deg) scale(1.6); }
+  60% { opacity: 1; transform: rotate(-10deg) scale(0.94); }
+  100% { opacity: 1; transform: rotate(-8deg) scale(1); }
+}
+.animate-stamp { animation: stampReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+/* Doodle line-draw: stroke paints itself in. Pair with pathLength="1" on the path. */
+@keyframes drawLine {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+.animate-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: drawLine 1.4s ease forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-folk-float, .animate-pin-glow, .animate-stamp, .animate-draw, .animate-spin-slow {
+    animation: none;
+  }
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #CBD5E1; }
