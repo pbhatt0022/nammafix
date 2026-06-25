@@ -64,6 +64,56 @@ function parseBase64Image(base64Str: string) {
 }
 
 // ==========================================
+// DUPLICATE DETECTION: Rule-based matching
+// ==========================================
+function checkDuplicates(newReport: { category: string; title: string; description: string; latitude: number; longitude: number }, existingReports: Report[]) {
+  const candidates: { id: string; similarity: number }[] = [];
+
+  existingReports.forEach((existing) => {
+    // Skip if already resolved or from very long ago (older than 30 days)
+    if (existing.status === "Resolved") return;
+    const daysOld = (Date.now() - new Date(existing.createdAt).getTime()) / (1000 * 60 * 60 * 24);
+    if (daysOld > 30) return;
+
+    let score = 0;
+
+    // 1. Category match (40 points if exact match)
+    if (existing.category === newReport.category) score += 40;
+
+    // 2. Location proximity (30 points if within 300m)
+    const lat1 = existing.latitude;
+    const lon1 = existing.longitude;
+    const lat2 = newReport.latitude;
+    const lon2 = newReport.longitude;
+    const R = 6371000; // Earth radius in meters
+    const φ1 = (lat1 * Math.PI) / 180;
+    const φ2 = (lat2 * Math.PI) / 180;
+    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+    const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // meters
+    if (distance < 300) score += 30;
+    else if (distance < 800) score += 15;
+
+    // 3. Keyword overlap (20 points if significant match)
+    const newWords = (newReport.title + " " + newReport.description).toLowerCase().split(/\s+/);
+    const existingWords = (existing.title + " " + existing.description).toLowerCase().split(/\s+/);
+    const commonWords = newWords.filter((w) => existingWords.includes(w) && w.length > 3).length;
+    if (commonWords >= 2) score += 20;
+    else if (commonWords === 1) score += 10;
+
+    // Add if score >= 50 (likely duplicate)
+    if (score >= 50) {
+      candidates.push({ id: existing.id, similarity: score });
+    }
+  });
+
+  // Return sorted by similarity score
+  return candidates.sort((a, b) => b.similarity - a.similarity);
+}
+
+// ==========================================
 // API ROUTES FIRST
 // ==========================================
 
@@ -249,6 +299,18 @@ app.post("/api/reports", async (req, res) => {
       recommendedNextAction: aiOutput.recommendedNextAction
     };
 
+    // Check for duplicates BEFORE saving
+    const duplicateCandidates = checkDuplicates(
+      {
+        category: newReport.category,
+        title: newReport.title,
+        description: newReport.description,
+        latitude: newReport.latitude,
+        longitude: newReport.longitude
+      },
+      database.reports
+    );
+
     // Save to Database
     database.reports.unshift(newReport);
 
@@ -259,7 +321,7 @@ app.post("/api/reports", async (req, res) => {
       fromStatus: "Submitted",
       toStatus: "AI Reviewed",
       changedBy: "system",
-      note: `NammaFix Gemini AI successfully generated Structured Evidence Packet. Classified as ${newReport.category} (${newReport.subCategory}) with ${newReport.severity} Severity. Recommended: ${newReport.suggestedResolver}.`,
+      note: `NammaFix Gemini AI successfully generated Structured Evidence Packet. Classified as ${newReport.category} (${newReport.subCategory}) with ${newReport.severity} Severity. Recommended: ${newReport.suggestedResolver}.${duplicateCandidates.length > 0 ? ` Found ${duplicateCandidates.length} similar issue(s) nearby.` : ""}`,
       createdAt: new Date().toISOString()
     };
     database.statusEvents.push(firstEvent);
@@ -271,7 +333,21 @@ app.post("/api/reports", async (req, res) => {
       user.karma += 15; // 10 base + 5 image/evidence bonus
     }
 
-    res.json(newReport);
+    // Return both the new report and potential duplicates
+    res.json({
+      report: newReport,
+      duplicates: duplicateCandidates.map(d => {
+        const existing = database.reports.find(r => r.id === d.id);
+        return {
+          id: d.id,
+          title: existing?.title,
+          category: existing?.category,
+          status: existing?.status,
+          similarity: d.similarity,
+          createdAt: existing?.createdAt
+        };
+      })
+    });
   } catch (err: any) {
     console.error("Error creating report:", err);
     res.status(500).json({ error: err.message || "Failed to create civic report." });

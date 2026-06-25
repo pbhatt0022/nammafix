@@ -147,7 +147,14 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
         throw new Error(errObj.error || "Server failed to catalog report.");
       }
 
-      const createdReport = await response.json();
+      const responseData = await response.json();
+      const createdReport = responseData.report || responseData;
+      const duplicates = responseData.duplicates || [];
+
+      if (duplicates.length > 0) {
+        setError(`⚠️ Found ${duplicates.length} similar issue(s) nearby. You can verify those reports or proceed with this new one.`);
+      }
+
       onSuccess(createdReport);
     } catch (err: any) {
       clearInterval(stepInterval);
