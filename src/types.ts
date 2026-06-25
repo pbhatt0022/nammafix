@@ -40,6 +40,20 @@ export interface Report {
   publicRisk?: string;
   evidenceObserved?: string[];
   recommendedNextAction?: string;
+  routing?: RoutingTicket;
+}
+
+// Auto-generated dispatch ticket — routes an issue to the right (mock) municipal
+// department + ward. This is a resolver-ready routing note, NOT real govt integration.
+export interface RoutingTicket {
+  ticketRef: string;     // e.g. NF-DISP-1042
+  department: string;    // e.g. BBMP Engineering — Roads
+  division: string;      // e.g. Ward 89 Roads & Infrastructure Cell
+  ward: string;          // e.g. Ward 89 · Indiranagar
+  channel: string;       // mock civic intake channel (e.g. BBMP Sahaaya 2.0)
+  slaHours: number;      // target resolution window
+  dispatchNote: string;  // generated routing note for the resolver
+  routedAt: string;
 }
 
 export interface Verification {

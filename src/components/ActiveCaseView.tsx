@@ -727,6 +727,42 @@ export default function ActiveCaseView({
           </div>
         </div>
 
+        {/* Auto-generated Civic Dispatch Ticket (mock resolver directory routing) */}
+        {report.routing && (
+          <div className="rounded-xl border-2 border-dashed border-indigo-200 bg-indigo-50/40 p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Navigation className="w-4 h-4 text-indigo-600" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-indigo-700">
+                  Auto-Routed Civic Dispatch Ticket
+                </span>
+              </div>
+              <span className="font-mono text-[10px] font-extrabold text-indigo-500 bg-white px-2 py-0.5 rounded border border-indigo-100">
+                {report.routing.ticketRef}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-3">
+              <Field label="Department" value={report.routing.department} />
+              <Field label="Division" value={report.routing.division} />
+              <Field label="Ward / Zone" value={report.routing.ward} />
+              <Field label="Intake Channel" value={report.routing.channel} />
+            </div>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">Target SLA</span>
+              <span className={`text-xs font-black px-2 py-0.5 rounded ${report.routing.slaHours <= 12 ? "bg-red-100 text-red-700" : report.routing.slaHours <= 48 ? "bg-orange-100 text-orange-700" : "bg-slate-100 text-slate-600"}`}>
+                {report.routing.slaHours}h
+              </span>
+            </div>
+            <div className="rounded-lg bg-white border border-indigo-100 p-2.5">
+              <span className="text-[9px] font-black uppercase tracking-wider text-indigo-400">Dispatch Note</span>
+              <p className="text-[11px] text-slate-600 leading-relaxed font-medium mt-0.5">{report.routing.dispatchNote}</p>
+            </div>
+            <p className="text-[9px] text-slate-400 italic mt-2">
+              Routed via NammaFix mock resolver directory — a resolver-ready routing note, not a live government dispatch.
+            </p>
+          </div>
+        )}
+
         {/* Neighbor Confirmations & comments */}
         <div className="pt-4 border-t border-slate-100 space-y-4">
           <div className="flex justify-between items-center">
@@ -849,6 +885,16 @@ export default function ActiveCaseView({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// Small label/value pair used inside the dispatch ticket card.
+function Field({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <span className="block text-[9px] font-black uppercase tracking-wider text-slate-400">{label}</span>
+      <span className="text-[11px] font-bold text-slate-700 leading-tight">{value}</span>
     </div>
   );
 }

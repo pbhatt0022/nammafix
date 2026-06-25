@@ -10,7 +10,7 @@ import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 
 // Load types and initial seed data
-import { Report, User, StatusEvent, Verification, Cluster, Mission } from "./src/types";
+import { Report, User, StatusEvent, Verification, Cluster, Mission, RoutingTicket } from "./src/types";
 import { initialReports, initialUsers, initialStatusEvents, initialVerifications, initialMissions } from "./src/data/mockReports";
 
 // Initialize environment
@@ -112,6 +112,64 @@ function checkDuplicates(newReport: { category: string; title: string; descripti
   // Return sorted by similarity score
   return candidates.sort((a, b) => b.similarity - a.similarity);
 }
+
+// ==========================================
+// AUTO-ROUTING: Mock resolver directory + ward lookup
+// Routes each issue to the right municipal department & ward and builds a
+// resolver-ready dispatch ticket. This is a MOCK directory — not a live
+// government integration.
+// ==========================================
+const RESOLVER_DIRECTORY: Record<string, { department: string; division: string; channel: string; slaHours: number }> = {
+  "Road Damage":   { department: "BBMP Engineering — Roads",        division: "Roads & Infrastructure Cell",   channel: "BBMP Sahaaya 2.0",         slaHours: 72 },
+  "Waste":         { department: "BBMP Solid Waste Management",     division: "SWM Ward Marshalling Unit",     channel: "BBMP Sahaaya 2.0",         slaHours: 48 },
+  "Streetlight":   { department: "BBMP Electrical Division",        division: "Street Lighting Maintenance",   channel: "BESCOM Mitra Helpline",    slaHours: 96 },
+  "Water Leakage": { department: "BWSSB Maintenance Cell",          division: "District Valve & Pipeline Crew", channel: "BWSSB Sahaya (1916)",      slaHours: 24 },
+  "Drainage":      { department: "BBMP Stormwater Drain (SWD) Dept", division: "Stormwater Desilting Crew",    channel: "BBMP Sahaaya 2.0",         slaHours: 48 },
+  "Public Safety": { department: "BBMP / BESCOM Joint Response",    division: "Hazard Rapid Response Cell",    channel: "Emergency Civic Hotline",  slaHours: 6 }
+};
+
+// Rough Bangalore ward zones by lat/long bounding boxes (mock geocoding).
+// Falls back to a default ward when no box matches.
+function lookupWard(lat: number, lng: number): string {
+  const zones: { name: string; minLat: number; maxLat: number; minLng: number; maxLng: number }[] = [
+    { name: "Ward 89 · Indiranagar",  minLat: 12.965, maxLat: 12.985, minLng: 77.630, maxLng: 77.650 },
+    { name: "Ward 151 · Koramangala", minLat: 12.925, maxLat: 12.945, minLng: 77.615, maxLng: 77.640 },
+    { name: "Ward 117 · HSR Layout",  minLat: 12.900, maxLat: 12.920, minLng: 77.635, maxLng: 77.660 },
+    { name: "Ward 7 · Yelahanka",     minLat: 13.090, maxLat: 13.120, minLng: 77.580, maxLng: 77.610 },
+    { name: "Ward 76 · Jayanagar",    minLat: 12.920, maxLat: 12.945, minLng: 77.575, maxLng: 77.600 }
+  ];
+  const z = zones.find((z) => lat >= z.minLat && lat <= z.maxLat && lng >= z.minLng && lng <= z.maxLng);
+  return z ? z.name : "Ward 89 · Central BBMP Zone";
+}
+
+function routeReport(report: Report): RoutingTicket {
+  const dir = RESOLVER_DIRECTORY[report.category] || RESOLVER_DIRECTORY["Road Damage"];
+  const ward = lookupWard(report.latitude, report.longitude);
+  // Critical issues get an escalated (halved) SLA.
+  const slaHours = report.severity === "Critical" ? Math.max(2, Math.round(dir.slaHours / 2)) : dir.slaHours;
+  const ticketRef = `NF-DISP-${Math.floor(1000 + Math.random() * 9000)}`;
+
+  const dispatchNote =
+    `Dispatch ${report.severity}-severity ${report.subCategory || report.category} at ${report.landmark} (${ward}). ` +
+    `${report.recommendedNextAction || "Inspect and action as per division SOP."} ` +
+    `Route via ${dir.channel}; target resolution within ${slaHours}h.`;
+
+  return {
+    ticketRef,
+    department: dir.department,
+    division: dir.division,
+    ward,
+    channel: dir.channel,
+    slaHours,
+    dispatchNote,
+    routedAt: new Date().toISOString()
+  };
+}
+
+// Backfill routing for seeded reports so the demo data also shows dispatch tickets.
+database.reports.forEach((r) => {
+  if (!r.routing) r.routing = routeReport(r);
+});
 
 // ==========================================
 // API ROUTES FIRST
@@ -298,6 +356,9 @@ app.post("/api/reports", async (req, res) => {
       evidenceObserved: aiOutput.evidenceObserved,
       recommendedNextAction: aiOutput.recommendedNextAction
     };
+
+    // Auto-route to the right municipal department + ward (mock directory)
+    newReport.routing = routeReport(newReport);
 
     // Check for duplicates BEFORE saving
     const duplicateCandidates = checkDuplicates(
