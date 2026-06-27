@@ -5,7 +5,8 @@
 
 import React, { useState } from "react";
 import { Report } from "../types";
-import { MapPin, Info, Layers, Eye } from "lucide-react";
+import { Eye } from "lucide-react";
+import { useT } from "../i18n";
 
 interface CommunityMapViewProps {
   reports: Report[];
@@ -21,6 +22,7 @@ const mapWards = [
 ];
 
 export default function CommunityMapView({ reports, selectedReport, onSelectReport }: CommunityMapViewProps) {
+  const { t } = useT();
   const [hoveredReport, setHoveredReport] = useState<Report | null>(null);
 
   // Map latitude (12.90 to 13.12) to SVG coordinate Y (450 to 50)
@@ -35,15 +37,6 @@ export default function CommunityMapView({ reports, selectedReport, onSelectRepo
     const x = 150 + ((lng - lngMin) / (lngMax - lngMin)) * 700;
 
     return { x: isNaN(x) ? 500 : x, y: isNaN(y) ? 250 : y };
-  };
-
-  const categoryColorMap = {
-    "Road Damage": "bg-red-500 text-red-500",
-    "Waste": "bg-yellow-500 text-yellow-500",
-    "Streetlight": "bg-orange-500 text-orange-500",
-    "Water Leakage": "bg-blue-500 text-blue-500",
-    "Drainage": "bg-amber-600 text-amber-600",
-    "Public Safety": "bg-purple-600 text-purple-600"
   };
 
   const categoryHexMap = {
@@ -61,10 +54,10 @@ export default function CommunityMapView({ reports, selectedReport, onSelectRepo
       <div className="flex justify-between items-center mb-4 pb-3 border-b border-slate-100 shrink-0">
         <div>
           <h2 className="text-base font-extrabold text-slate-800 flex items-center gap-1.5">
-            🗺️ Interactive Bangalore Ward Operations Map
+            🗺️ {t("map.title")}
           </h2>
           <p className="text-xs text-slate-500">
-            Glowing pins scale and pulsate based on real-time Severity and Community Verification index
+            {t("map.subtitle")}
           </p>
         </div>
         
@@ -72,19 +65,19 @@ export default function CommunityMapView({ reports, selectedReport, onSelectRepo
         <div className="flex items-center gap-3 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 text-[10px] font-mono">
           <div className="flex items-center gap-1">
             <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" />
-            <span>Roads</span>
+            <span>{t("map.legend.roads")}</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="w-2.5 h-2.5 rounded-full bg-yellow-500 inline-block" />
-            <span>Waste</span>
+            <span>{t("map.legend.waste")}</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" />
-            <span>Water</span>
+            <span>{t("map.legend.water")}</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="w-2.5 h-2.5 rounded-full bg-purple-600 inline-block" />
-            <span>Safety</span>
+            <span>{t("map.legend.safety")}</span>
           </div>
         </div>
       </div>
@@ -94,13 +87,13 @@ export default function CommunityMapView({ reports, selectedReport, onSelectRepo
         {/* Map Overlay HUD Panel */}
         <div className="absolute top-4 left-4 bg-white/95 backdrop-blur border border-slate-200/80 p-3 rounded-lg shadow-sm max-w-[200px] z-10 space-y-1">
           <span className="block text-[10px] font-mono font-black text-slate-400 uppercase tracking-widest">
-            WARD DETECTOR
+            {t("map.detector")}
           </span>
           <span className="block text-xs font-bold text-slate-800">
-            BBMP Ward 89 (Yelahanka/Central)
+            {t("map.ward")}
           </span>
           <p className="text-[10px] text-slate-500 leading-tight">
-            Pins are plotted dynamically from verified citizen GPS tags. Click any pin to load active evidence.
+            {t("map.hint")}
           </p>
         </div>
 
@@ -185,28 +178,28 @@ export default function CommunityMapView({ reports, selectedReport, onSelectRepo
                 <>
                   <div className="flex justify-between items-start gap-2">
                     <span className="text-[10px] font-bold text-slate-400 uppercase">
-                      Case #{r.id}
+                      {t("map.case")} #{r.id}
                     </span>
                     <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase ${
                       r.status === "Resolved" ? "bg-emerald-50 text-emerald-700" : "bg-indigo-50 text-indigo-700"
                     }`}>
-                      {r.status}
+                      {t("enum.status." + r.status)}
                     </span>
                   </div>
                   <h4 className="text-xs font-extrabold text-slate-800 leading-snug">
                     {r.title}
                   </h4>
                   <div className="flex gap-2 items-center text-[10px] text-slate-400 font-mono">
-                    <span>{r.category}</span>
+                    <span>{t("enum.cat." + r.category)}</span>
                     <span>·</span>
-                    <span className="text-red-500 font-bold">Severity: {r.severity}</span>
+                    <span className="text-red-500 font-bold">{t("map.severity")}: {t("enum.sev." + r.severity)}</span>
                   </div>
                   <button
                     onClick={() => onSelectReport(r)}
                     className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-[9px] uppercase tracking-wider py-1.5 rounded flex items-center justify-center gap-1.5 mt-2"
                   >
                     <Eye className="w-3.5 h-3.5" />
-                    Load Evidence Packet
+                    {t("map.load")}
                   </button>
                 </>
               );

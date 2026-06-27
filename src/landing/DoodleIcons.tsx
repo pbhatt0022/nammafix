@@ -83,16 +83,6 @@ export function BinIcon(p: IconProps) {
   );
 }
 
-export function BarricadeIcon(p: IconProps) {
-  return (
-    <Svg {...p} title={p.title ?? "Road barricade"}>
-      <path d="M14 24 H50 M14 24 V52 M50 24 V52" />
-      <rect x="14" y="30" width="36" height="9" fill="#F97316" fillOpacity="0.3" />
-      <path d="M18 30 l8 9 M30 30 l8 9 M42 30 l8 9" stroke="#D72638" />
-    </Svg>
-  );
-}
-
 export function WardPinIcon(p: IconProps) {
   return (
     <Svg {...p} title={p.title ?? "Ward pin"}>

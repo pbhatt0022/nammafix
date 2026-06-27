@@ -6,8 +6,9 @@
 import React, { useState } from "react";
 import Landing from "./landing/Landing";
 import App from "./App";
+import { LanguageProvider } from "./i18n";
 
-export default function Root() {
+function RootInner() {
   const [entered, setEntered] = useState(false);
   const [reporting, setReporting] = useState(false);
   const [tab, setTab] = useState("dashboard");
@@ -25,4 +26,12 @@ export default function Root() {
   }
 
   return <App initialTab={tab} startReporting={reporting} onHome={() => setEntered(false)} />;
+}
+
+export default function Root() {
+  return (
+    <LanguageProvider>
+      <RootInner />
+    </LanguageProvider>
+  );
 }

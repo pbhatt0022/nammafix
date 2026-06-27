@@ -17,6 +17,8 @@ import StatusStamp from "./StatusStamp";
 import ImpactPreview from "./ImpactPreview";
 import { PaisleyDivider, PotholeIcon, StreetlightIcon, PipeLeakIcon, HandsIcon, EvidencePacketIcon, VerifiedStampIcon, WardPinIcon } from "./DoodleIcons";
 import { heroImage } from "./assets";
+import { useT } from "../i18n";
+import LanguageSelector from "../i18n/LanguageSelector";
 
 type Intent = "report" | "map";
 
@@ -29,6 +31,7 @@ const rise = {
 };
 
 export default function Landing({ onEnter }: { onEnter: (intent: Intent) => void }) {
+  const { t } = useT();
   return (
     <div className="min-h-screen bg-cream font-body text-ink">
       {/* ---- top bar ---- */}
@@ -43,12 +46,15 @@ export default function Landing({ onEnter }: { onEnter: (intent: Intent) => void
               <div className="font-mono text-[9px] uppercase tracking-widest text-ink/45">Civic Resolution Layer</div>
             </div>
           </div>
-          <button
-            onClick={() => onEnter("report")}
-            className="rounded-xl bg-saffron px-4 py-2 font-display text-sm font-bold text-white shadow-[3px_3px_0_0_rgba(58,31,27,0.25)] transition-transform hover:-translate-y-0.5"
-          >
-            Open App
-          </button>
+          <div className="flex items-center gap-2">
+            <LanguageSelector />
+            <button
+              onClick={() => onEnter("report")}
+              className="rounded-xl bg-saffron px-4 py-2 font-display text-sm font-bold text-white shadow-[3px_3px_0_0_rgba(58,31,27,0.25)] transition-transform hover:-translate-y-0.5"
+            >
+              {t("nav.openApp")}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -59,17 +65,16 @@ export default function Landing({ onEnter }: { onEnter: (intent: Intent) => void
           <motion.div {...rise}>
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border-2 border-dashed border-peacock/50 bg-peacock/10 px-3 py-1">
               <MapPin className="h-3.5 w-3.5 text-peacock" />
-              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-peacock">Built for Indian streets</span>
+              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-peacock">{t("hero.badge")}</span>
             </div>
             <h1 className="font-honk text-6xl leading-none text-indigoc sm:text-7xl" style={{ fontWeight: 400 }}>
               NammaFix AI
             </h1>
-            <p className="mt-4 font-display text-2xl font-extrabold leading-tight text-ink sm:text-3xl">
-              Report once. Verify together.<br />Resolve transparently.
+            <p className="mt-4 font-display text-2xl font-extrabold leading-tight text-ink sm:text-3xl text-balance">
+              {t("hero.tagline")}
             </p>
-            <p className="mt-4 max-w-md font-body text-base leading-relaxed text-ink/70">
-              Turn local civic issues into AI-ready action: report, validate, prioritize, route,
-              track, and verify closure with your community.
+            <p className="mt-4 max-w-md font-body text-base leading-relaxed text-ink/70 text-pretty">
+              {t("hero.supporting")}
             </p>
 
             <div className="mt-7 flex flex-wrap gap-3">
@@ -77,7 +82,7 @@ export default function Landing({ onEnter }: { onEnter: (intent: Intent) => void
                 onClick={() => onEnter("report")}
                 className="group inline-flex items-center gap-2 rounded-xl bg-saffron px-6 py-3 font-display text-base font-bold text-white shadow-[4px_4px_0_0_rgba(58,31,27,0.3)] transition-transform hover:-translate-y-0.5"
               >
-                Report a Local Issue
+                {t("hero.cta.report")}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </button>
               <button
@@ -85,7 +90,7 @@ export default function Landing({ onEnter }: { onEnter: (intent: Intent) => void
                 className="inline-flex items-center gap-2 rounded-xl border-2 border-indigoc bg-cream px-6 py-3 font-display text-base font-bold text-indigoc transition-transform hover:-translate-y-0.5"
               >
                 <Eye className="h-4 w-4" />
-                View Ward Pulse
+                {t("hero.cta.pulse")}
               </button>
             </div>
           </motion.div>
@@ -93,11 +98,11 @@ export default function Landing({ onEnter }: { onEnter: (intent: Intent) => void
           <motion.div {...rise} transition={{ ...rise.transition, delay: 0.1 }} className="relative">
             <DoodleHero src={heroImage} />
             {/* floating chips around the hero */}
-            <FloatingChip className="-left-2 top-6" label="AI Evidence Packet" tone="#243B73" delay={0} />
-            <FloatingChip className="right-0 top-0" label="Verified by Neighbours" tone="#2E7D32" delay={0.4} />
-            <FloatingChip className="-left-3 bottom-16" label="Resolver Copilot" tone="#F97316" delay={0.8} />
-            <FloatingChip className="bottom-2 right-4" label="Closure Proof" tone="#00A6A6" delay={1.2} />
-            <FloatingChip className="bottom-24 -right-3" label="Civic Karma" tone="#E83E8C" delay={1.6} />
+            <FloatingChip className="-left-2 top-6" label={t("chip.evidence")} tone="#243B73" delay={0} />
+            <FloatingChip className="right-0 top-0" label={t("chip.verified")} tone="#2E7D32" delay={0.4} />
+            <FloatingChip className="-left-3 bottom-16" label={t("chip.copilot")} tone="#F97316" delay={0.8} />
+            <FloatingChip className="bottom-2 right-4" label={t("chip.closure")} tone="#00A6A6" delay={1.2} />
+            <FloatingChip className="bottom-24 -right-3" label={t("chip.karma")} tone="#E83E8C" delay={1.6} />
           </motion.div>
         </div>
         <PaisleyDivider className="mx-auto h-5 w-full max-w-3xl px-5 pb-4" />
@@ -105,17 +110,11 @@ export default function Landing({ onEnter }: { onEnter: (intent: Intent) => void
 
       {/* ================= 2. PROBLEM ================= */}
       <section className="mx-auto max-w-6xl px-5 py-16">
-        <SectionHeading
-          kicker="The void problem"
-          title="Civic reports should not disappear into a void."
-        />
+        <SectionHeading kicker={t("problem.kicker")} title={t("problem.title")} />
         <div className="mt-10 grid gap-5 sm:grid-cols-3">
-          <PainCard icon={<Layers className="h-7 w-7" />} tone="#F97316" title="Fragmented reporting"
-            body="Issues scatter across WhatsApp groups, phone calls, and forms — nobody owns the full picture." />
-          <PainCard icon={<Copy className="h-7 w-7" />} tone="#E83E8C" title="Duplicate noisy complaints"
-            body="The same pothole gets reported ten times, drowning out the issues no one has flagged yet." />
-          <PainCard icon={<ShieldCheck className="h-7 w-7" />} tone="#D72638" title="No proof of real closure"
-            body="“Marked resolved” means little without before/after evidence the neighbourhood can verify." />
+          <PainCard icon={<Layers className="h-7 w-7" />} tone="#F97316" title={t("problem.fragmented.title")} body={t("problem.fragmented.body")} />
+          <PainCard icon={<Copy className="h-7 w-7" />} tone="#E83E8C" title={t("problem.duplicate.title")} body={t("problem.duplicate.body")} />
+          <PainCard icon={<ShieldCheck className="h-7 w-7" />} tone="#D72638" title={t("problem.proof.title")} body={t("problem.proof.body")} />
         </div>
       </section>
 
@@ -123,7 +122,7 @@ export default function Landing({ onEnter }: { onEnter: (intent: Intent) => void
       <section className="relative overflow-hidden bg-turmeric/60 py-16">
         <FolkPatternBackground opacity={0.04} />
         <div className="relative mx-auto max-w-6xl px-5">
-          <SectionHeading kicker="The docket pipeline" title="From complaint to civic resolution" center />
+          <SectionHeading kicker={t("flow.kicker")} title={t("flow.title")} center />
           <motion.div {...rise} className="mt-10">
             <CivicFlow />
           </motion.div>
@@ -136,15 +135,13 @@ export default function Landing({ onEnter }: { onEnter: (intent: Intent) => void
           <motion.div {...rise}>
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border-2 border-dashed border-lotus/50 bg-lotus/10 px-3 py-1">
               <Sparkles className="h-3.5 w-3.5 text-lotus" />
-              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-lotus">The centerpiece</span>
+              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-lotus">{t("evidence.kicker")}</span>
             </div>
-            <h2 className="font-display text-3xl font-extrabold leading-tight text-indigoc sm:text-4xl">
-              A civic evidence packet, not just a complaint.
+            <h2 className="font-display text-3xl font-extrabold leading-tight text-indigoc sm:text-4xl text-balance">
+              {t("evidence.title")}
             </h2>
-            <p className="mt-4 max-w-md font-body text-base leading-relaxed text-ink/70">
-              Gemini reads the photo, description and location, then issues a municipal docket slip:
-              severity, public risk, the right resolver, what’s missing, and the recommended next action —
-              ready for routing in seconds.
+            <p className="mt-4 max-w-md font-body text-base leading-relaxed text-ink/70 text-pretty">
+              {t("evidence.body")}
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
               <StatusStamp label="Submitted" tone="indigo" />
@@ -165,26 +162,26 @@ export default function Landing({ onEnter }: { onEnter: (intent: Intent) => void
           <div className="mx-auto max-w-2xl text-center">
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border-2 border-dashed border-marigold/50 px-3 py-1">
               <HandsIcon className="h-4 w-4" />
-              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-marigold">Witness slips</span>
+              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-marigold">{t("community.kicker")}</span>
             </div>
-            <h2 className="font-display text-3xl font-extrabold leading-tight sm:text-4xl">
-              Verified by neighbours, not just uploaded by one person.
+            <h2 className="font-display text-3xl font-extrabold leading-tight sm:text-4xl text-balance">
+              {t("community.title")}
             </h2>
           </div>
           <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {[
-              { label: "I saw this too", tone: "#00A6A6", icon: <Eye className="h-5 w-5" /> },
-              { label: "Add fresh evidence", tone: "#FACC15", icon: <Plus className="h-5 w-5" /> },
-              { label: "Still active", tone: "#F97316", icon: <RefreshCw className="h-5 w-5" /> },
-              { label: "Looks fixed", tone: "#2E7D32", icon: <VerifiedStampIcon className="h-5 w-5" /> },
-              { label: "Needs recheck", tone: "#E83E8C", icon: <Camera className="h-5 w-5" /> },
+              { label: t("community.slip.saw"), tone: "#00A6A6", icon: <Eye className="h-5 w-5" /> },
+              { label: t("community.slip.evidence"), tone: "#FACC15", icon: <Plus className="h-5 w-5" /> },
+              { label: t("community.slip.active"), tone: "#F97316", icon: <RefreshCw className="h-5 w-5" /> },
+              { label: t("community.slip.fixed"), tone: "#2E7D32", icon: <VerifiedStampIcon className="h-5 w-5" /> },
+              { label: t("community.slip.recheck"), tone: "#E83E8C", icon: <Camera className="h-5 w-5" /> },
             ].map((w) => (
               <div key={w.label} className="rounded-xl border-2 border-dashed border-cream/30 bg-cream/5 p-4 text-center">
                 <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-lg" style={{ background: w.tone, color: "#3A1F1B" }}>
                   {w.icon}
                 </div>
                 <div className="font-display text-sm font-extrabold">{w.label}</div>
-                <div className="mt-1 font-mono text-[9px] uppercase tracking-wider text-cream/50">Witness slip</div>
+                <div className="mt-1 font-mono text-[9px] uppercase tracking-wider text-cream/50">{t("community.slip.label")}</div>
               </div>
             ))}
           </div>
@@ -193,7 +190,7 @@ export default function Landing({ onEnter }: { onEnter: (intent: Intent) => void
 
       {/* ================= 6. CIVIC KARMA ================= */}
       <section className="mx-auto max-w-6xl px-5 py-16">
-        <SectionHeading kicker="Contribution passbook" title="Reward verified civic impact, not complaint volume." center />
+        <SectionHeading kicker={t("karma.kicker")} title={t("karma.title")} center />
         <motion.div {...rise} className="mt-10 rounded-3xl border-2 border-dashed border-ink/25 bg-turmeric/50 p-8">
           <div className="grid grid-cols-2 gap-y-8 sm:grid-cols-4 lg:grid-cols-7">
             <KarmaBadge label="First Fix Reporter" tone="#F97316" icon={<PotholeIcon className="h-full w-full" />} />
@@ -209,7 +206,7 @@ export default function Landing({ onEnter }: { onEnter: (intent: Intent) => void
 
       {/* ================= 7. IMPACT DASHBOARD ================= */}
       <section className="mx-auto max-w-6xl px-5 py-16">
-        <SectionHeading kicker="Ward pulse" title="Your ward’s civic health at a glance." />
+        <SectionHeading kicker={t("impact.kicker")} title={t("impact.title")} />
         <motion.div {...rise} className="mt-10">
           <ImpactPreview />
         </motion.div>
@@ -219,27 +216,27 @@ export default function Landing({ onEnter }: { onEnter: (intent: Intent) => void
       <section className="relative overflow-hidden bg-indigoc py-20 text-cream">
         <FolkPatternBackground opacity={0.07} color="#FFF8E7" />
         <div className="relative mx-auto max-w-3xl px-5 text-center">
-          <motion.h2 {...rise} className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">
-            Built for Indian streets.<br />Powered by community action.
+          <motion.h2 {...rise} className="font-display text-4xl font-extrabold leading-tight sm:text-5xl text-balance">
+            {t("final.title")}
           </motion.h2>
-          <p className="mx-auto mt-4 max-w-md font-body text-base text-cream/75">
-            From civic issue to civic action — your neighbourhood deserves a visible fix.
+          <p className="mx-auto mt-4 max-w-md font-body text-base text-cream/75 text-pretty">
+            {t("final.body")}
           </p>
           <div className="mt-8 flex flex-col items-center gap-6">
             <button
               onClick={() => onEnter("report")}
               className="group inline-flex items-center gap-2 rounded-2xl bg-saffron px-8 py-4 font-display text-lg font-bold text-white shadow-[5px_5px_0_0_rgba(0,0,0,0.3)] transition-transform hover:-translate-y-1"
             >
-              Start fixing your neighbourhood
+              {t("final.cta")}
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </button>
-            <StatusStamp label="AI Docket Ready" tone="green" animate className="bg-cream/95 text-base" />
+            <StatusStamp label={t("final.stamp")} tone="green" animate className="bg-cream/95 text-base" />
           </div>
         </div>
       </section>
 
       <footer className="bg-cream px-5 py-8 text-center font-mono text-[11px] uppercase tracking-wider text-ink/45">
-        NammaFix AI · Hyperlocal Problem Solver · Powered by Gemini
+        NammaFix AI · {t("footer.tagline")}
       </footer>
     </div>
   );

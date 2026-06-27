@@ -4,8 +4,10 @@
  */
 
 import React, { useState } from "react";
-import { Camera, MapPin, UploadCloud, Cpu, AlertCircle, CheckCircle, Flame } from "lucide-react";
+import { UploadCloud, Cpu, AlertCircle, Flame } from "lucide-react";
 import { Report } from "../types";
+import { useT } from "../i18n";
+import MicButton from "../i18n/MicButton";
 
 interface ReportIssueViewProps {
   onSuccess: (newReport: Report) => void;
@@ -45,6 +47,7 @@ const BANGALORE_PRESETS = [
 ];
 
 export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount }: ReportIssueViewProps) {
+  const { t } = useT();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Road Damage");
@@ -168,17 +171,17 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
       <div className="flex justify-between items-center mb-5 pb-4 border-b border-slate-100">
         <div>
           <h2 className="text-lg font-black text-slate-800 flex items-center gap-2">
-            📸 Submit New Civic Report
+            📸 {t("report.title")}
           </h2>
           <p className="text-xs text-slate-500">
-            Powered by Gemini Multimodal Structured Analysis
+            {t("report.subtitle")}
           </p>
         </div>
         <button
           onClick={onCancel}
           className="text-xs font-bold uppercase text-slate-400 hover:text-slate-600 px-2 py-1 rounded"
         >
-          Cancel
+          {t("common.cancel")}
         </button>
       </div>
 
@@ -196,13 +199,13 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
             <Cpu className="w-6 h-6 text-indigo-600 absolute inset-0 m-auto animate-pulse" />
           </div>
           <h3 className="text-base font-extrabold text-slate-800 mb-2">
-            AI INTAKE ENGINE RUNNING
+            {t("report.loading.title")}
           </h3>
           <p className="text-xs font-mono text-indigo-600 font-bold tracking-tight uppercase animate-pulse">
             {loadingStep}
           </p>
           <div className="mt-8 max-w-sm p-3 bg-slate-50 rounded-lg border border-slate-100 text-[10px] text-slate-400 font-mono">
-            GEMINI is parsing raw image pixels to categorize, evaluate risk bounds, assign severity, and route your ticket.
+            {t("report.loading.hint")}
           </div>
         </div>
       ) : (
@@ -211,7 +214,7 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
           <div>
             <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-1">
               <Flame className="w-3 h-3 text-orange-500" />
-              Rapid Hackathon Presets (Click to Auto-Fill)
+              {t("report.presets")}
             </label>
             <div className="grid grid-cols-3 gap-2">
               {BANGALORE_PRESETS.map((preset, idx) => (
@@ -222,7 +225,7 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
                   className="p-2.5 bg-slate-50 border border-slate-200 hover:border-indigo-400 rounded-lg text-left transition-all hover:bg-white"
                 >
                   <span className="block text-[10px] font-extrabold text-indigo-600 uppercase tracking-tighter">
-                    Preset #{idx + 1}
+                    {t("report.preset")} #{idx + 1}
                   </span>
                   <span className="block text-[11px] font-bold text-slate-800 line-clamp-1 mt-0.5">
                     {preset.title}
@@ -235,7 +238,7 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
           {/* Visual upload box */}
           <div>
             <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">
-              Step 1: Evidence Photo Upload (Required)
+              {t("report.photo.label")}
             </label>
             
             {imageUrl ? (
@@ -247,7 +250,7 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
                 />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all bg-black/40">
                   <label className="cursor-pointer bg-white text-slate-800 px-4 py-2 rounded-lg text-xs font-bold shadow-lg uppercase tracking-wider">
-                    Change Photo
+                    {t("report.photo.change")}
                     <input
                       type="file"
                       accept="image/*"
@@ -257,14 +260,14 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
                   </label>
                 </div>
                 <div className="absolute top-3 left-3 bg-indigo-600 text-white text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded tracking-widest">
-                  Preview Loaded
+                  {t("report.photo.loaded")}
                 </div>
               </div>
             ) : (
               <label className="border-2 border-dashed border-slate-300 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer bg-slate-50 hover:bg-slate-100/50 transition-all aspect-video">
                 <UploadCloud className="w-10 h-10 text-slate-400 mb-2 animate-bounce" />
-                <span className="text-xs font-black text-slate-700">Drag & Drop or Click to Select File</span>
-                <span className="text-[10px] text-slate-400 mt-1 font-mono uppercase">Max size: 8MB (JPEG, PNG)</span>
+                <span className="text-xs font-black text-slate-700">{t("report.photo.drop")}</span>
+                <span className="text-[10px] text-slate-400 mt-1 font-mono uppercase">{t("report.photo.max")}</span>
                 <input
                   type="file"
                   accept="image/*"
@@ -279,53 +282,59 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">
-                Category (Initial Guess)
+                {t("report.category.label")}
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-medium text-slate-700 focus:outline-indigo-500"
               >
-                <option value="Road Damage">Road Damage (Potholes, footpaths)</option>
-                <option value="Waste">Waste (Garbage piles, commercial dumps)</option>
-                <option value="Streetlight">Streetlight (Broken luminaire, dark corridor)</option>
-                <option value="Water Leakage">Water Leakage (BWSSB pipe ruptures)</option>
-                <option value="Drainage">Drainage (Clogged storm drain, raw sewage)</option>
-                <option value="Public Safety">Public Safety (Sparking wires, open manholes)</option>
+                <option value="Road Damage">{t("report.cat.road")}</option>
+                <option value="Waste">{t("report.cat.waste")}</option>
+                <option value="Streetlight">{t("report.cat.streetlight")}</option>
+                <option value="Water Leakage">{t("report.cat.water")}</option>
+                <option value="Drainage">{t("report.cat.drainage")}</option>
+                <option value="Public Safety">{t("report.cat.safety")}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">
-                Neighborhood / Landmark
+                {t("report.landmark.label")}
               </label>
-              <input
-                type="text"
-                value={landmark}
-                onChange={(e) => setLandmark(e.target.value)}
-                placeholder="E.g., Outside National College metro"
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-medium text-slate-700 focus:outline-indigo-500"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={landmark}
+                  onChange={(e) => setLandmark(e.target.value)}
+                  placeholder={t("report.landmark.placeholder")}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 pr-9 text-xs font-medium text-slate-700 focus:outline-indigo-500"
+                />
+                <MicButton onTranscript={(txt) => setLandmark((p) => (p ? p + " " : "") + txt)} className="absolute right-1.5 top-1/2 -translate-y-1/2" />
+              </div>
             </div>
           </div>
 
           <div>
             <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">
-              Specific Civic Description
+              {t("report.desc.label")}
             </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-              placeholder="Provide a short description detailing how long the issue has existed or the risk to traffic."
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-medium text-slate-700 focus:outline-indigo-500 resize-none"
-            />
+            <div className="relative">
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+                placeholder={t("report.desc.placeholder")}
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 pr-10 text-xs font-medium text-slate-700 focus:outline-indigo-500 resize-none"
+              />
+              <MicButton onTranscript={(txt) => setDescription((p) => (p ? p + " " : "") + txt)} className="absolute right-2 top-2" />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">
-                Latitude Coordinate
+                {t("report.lat")}
               </label>
               <input
                 type="number"
@@ -337,7 +346,7 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
             </div>
             <div>
               <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">
-                Longitude Coordinate
+                {t("report.lng")}
               </label>
               <input
                 type="number"
@@ -355,14 +364,14 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
               className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-black uppercase tracking-wider shadow-md shadow-indigo-100 flex items-center justify-center gap-2"
             >
               <Cpu className="w-4 h-4 animate-spin-slow" />
-              Analyze and Review with Gemini
+              {t("report.submit")}
             </button>
             <button
               type="button"
               onClick={onCancel}
               className="py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold uppercase"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
           </div>
         </form>

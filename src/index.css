@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;850;900&family=JetBrains+Mono:wght@400;500;700;800&family=Anek+Latin:wght@400;500;600;700;800&family=Mukta:wght@400;500;600;700;800&family=Honk&family=Noto+Sans:wght@400;500;700&display=swap');
+/* Indian-script fonts so every supported language renders crisply regardless of the
+   viewer's OS. Per-glyph fallback picks the right one from the font stacks below. */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;700&family=Noto+Sans+Kannada:wght@400;500;700&family=Noto+Sans+Tamil:wght@400;500;700&family=Noto+Sans+Telugu:wght@400;500;700&family=Noto+Sans+Bengali:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -6,8 +9,8 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
   /* Bharat Civic Folk-Tech display + body type. Noto Sans = multilingual fallback. */
-  --font-display: "Anek Latin", "Noto Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Mukta", "Noto Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Anek Latin", "Noto Sans Devanagari", "Noto Sans Kannada", "Noto Sans Tamil", "Noto Sans Telugu", "Noto Sans Bengali", "Noto Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Mukta", "Noto Sans Devanagari", "Noto Sans Kannada", "Noto Sans Tamil", "Noto Sans Telugu", "Noto Sans Bengali", "Noto Sans", ui-sans-serif, system-ui, sans-serif;
   --font-honk: "Honk", system-ui, cursive;
 
   /* Warm Indian civic palette — exposed as Tailwind color utilities (bg-cream, text-saffron, ...) */
@@ -22,6 +25,48 @@
   --color-lotus: #E83E8C;     /* badge / mission accents */
   --color-leaf: #2E7D32;      /* verified / resolved */
   --color-concrete: #E5E1D8;  /* borders / neutral UI */
+
+  /* ---- Warm remap of the dashboard's cold Tailwind ramps ----
+     The app shell was authored in slate/indigo/emerald. Rather than hand-edit
+     ~300 class usages, we retune those ramps to the civic palette here, so the
+     whole dashboard reads warm + on-brand in one place (reversible, low-risk).
+     The landing page uses the civic tokens above, not these ramps, so it's
+     unaffected. Lightness progression preserved; hue shifted warm. */
+
+  /* slate -> warm stone / ink */
+  --color-slate-50:  #FAF5E6;
+  --color-slate-100: #F3ECD8;
+  --color-slate-200: #E7E1D2;  /* ~concrete, borders */
+  --color-slate-300: #D6CEBC;
+  --color-slate-400: #7F7152;  /* muted labels/metadata — darkened to clear AA (~4.8:1 on white) */
+  --color-slate-500: #766954;  /* muted secondary text */
+  --color-slate-600: #5E5142;
+  --color-slate-700: #463A2D;
+  --color-slate-800: #34211B;  /* headings */
+  --color-slate-900: #2A1712;
+
+  /* indigo -> civic indigo */
+  --color-indigo-50:  #E8ECF6;
+  --color-indigo-100: #D6DEEF;
+  --color-indigo-200: #B7C5E3;
+  --color-indigo-300: #8DA0CC;
+  --color-indigo-400: #5C74AD;
+  --color-indigo-500: #36508F;
+  --color-indigo-600: #243B73;  /* primary structural accent */
+  --color-indigo-700: #1E3261;
+  --color-indigo-800: #182951;
+  --color-indigo-900: #142243;
+  --color-indigo-950: #0E1830;
+
+  /* emerald -> leaf green (verified/resolved) */
+  --color-emerald-50:  #E7F2E7;
+  --color-emerald-100: #CFE6D0;
+  --color-emerald-200: #ADD8B0;
+  --color-emerald-400: #4CA152;
+  --color-emerald-500: #2E7D32;
+  --color-emerald-600: #2A7330;
+  --color-emerald-700: #256528;
+  --color-emerald-800: #1E5320;
 }
 
 /* ---- Micro-interaction keyframes (used lightly: floating pins, stamp reveal, line draw, glow) ---- */

@@ -710,6 +710,35 @@ app.post("/api/reports/:id/close", async (req, res) => {
   }
 });
 
+// POST translate - Live Gemini translation of dynamic AI content (evidence packets,
+// reports) into a target language. UI chrome uses static strings instead (see src/i18n).
+app.post("/api/translate", async (req, res) => {
+  const { fields, language } = req.body as { fields: Record<string, string>; language: string };
+  if (!fields || !language) {
+    return res.status(400).json({ error: "Provide `fields` (object of strings) and `language`." });
+  }
+  if (!aiClient) {
+    return res.status(503).json({ error: "Translation is unavailable — Gemini API key not configured." });
+  }
+  try {
+    const prompt =
+      `Translate the VALUES of this JSON object into ${language}, for a civic issue-reporting app. ` +
+      `Keep the SAME keys; translate only values; keep proper nouns unchanged ("NammaFix AI", "Gemini", "BBMP", "BWSSB", "BESCOM", "Ward"); ` +
+      `keep it natural and concise. Return ONLY the JSON object, no markdown.\n\n` +
+      JSON.stringify(fields);
+    const r = await aiClient.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      config: { responseMimeType: "application/json" }
+    });
+    const text = (r.text || "").trim().replace(/^```json\s*/i, "").replace(/```\s*$/, "");
+    res.json({ translations: JSON.parse(text) });
+  } catch (err: any) {
+    console.error("Translation failed:", err);
+    res.status(500).json({ error: err.message || "Translation failed." });
+  }
+});
+
 // GET stats - Calculates aggregated data & dynamic Gemini insights
 app.get("/api/stats", async (req, res) => {
   const reports = database.reports;

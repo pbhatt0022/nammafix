@@ -5,6 +5,9 @@
 
 import React, { useState, useEffect } from "react";
 import { Report, StatusEvent, Verification, ResolverCopilotOutput, ClosureVerificationOutput } from "../types";
+import TranslatePacket from "../i18n/TranslatePacket";
+import { useT } from "../i18n";
+import MicButton from "../i18n/MicButton";
 import { ShieldCheck, Calendar, MapPin, Cpu, UploadCloud, AlertCircle, Sparkles, Check, CheckCircle2, Navigation, HeartHandshake, FileText, ChevronRight, MessageSquare } from "lucide-react";
 
 interface ActiveCaseViewProps {
@@ -40,6 +43,7 @@ export default function ActiveCaseView({
   incrementApiCount,
   userId
 }: ActiveCaseViewProps) {
+  const { t } = useT();
   const [copilotData, setCopilotData] = useState<ResolverCopilotOutput | null>(null);
   const [loadingCopilot, setLoadingCopilot] = useState(false);
   
@@ -514,7 +518,7 @@ export default function ActiveCaseView({
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
           <span className="text-white font-mono text-[11px] tracking-wider uppercase font-extrabold">
-            AI Evidence Packet #{report.id}
+            {t("case.packet")} #{report.id}
           </span>
         </div>
         
@@ -524,7 +528,7 @@ export default function ActiveCaseView({
             className="flex items-center gap-1 px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded text-[10px] font-black uppercase tracking-wider transition-all border border-slate-700 cursor-pointer"
           >
             <FileText className="w-3.5 h-3.5" />
-            Export
+            {t("case.export")}
           </button>
           {showExportMenu && (
             <div className="absolute right-0 mt-1.5 w-32 bg-slate-800 border border-slate-700 rounded-lg shadow-xl py-1 z-50 text-[9px] uppercase font-mono tracking-wider">
@@ -535,7 +539,7 @@ export default function ActiveCaseView({
                 }}
                 className="w-full text-left px-3 py-1.5 text-slate-300 hover:bg-slate-700 hover:text-white transition-all font-bold cursor-pointer"
               >
-                Download JSON
+                {t("case.downloadJson")}
               </button>
               <button
                 onClick={() => {
@@ -544,7 +548,7 @@ export default function ActiveCaseView({
                 }}
                 className="w-full text-left px-3 py-1.5 text-slate-300 hover:bg-slate-700 hover:text-white transition-all font-bold border-t border-slate-700 cursor-pointer"
               >
-                Print PDF
+                {t("case.printPdf")}
               </button>
             </div>
           )}
@@ -558,7 +562,7 @@ export default function ActiveCaseView({
           <div>
             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
               <span className="px-2.5 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-black uppercase tracking-tight">
-                {report.category}
+                {t("enum.cat." + report.category)}
               </span>
               <span className="px-2.5 py-0.5 bg-slate-100 text-slate-700 rounded text-[10px] font-bold uppercase tracking-tight">
                 {report.subCategory}
@@ -566,7 +570,7 @@ export default function ActiveCaseView({
               <span className={`px-2.5 py-0.5 border rounded text-[10px] font-bold uppercase ${
                 report.status === "Resolved" ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-blue-50 text-blue-700 border-blue-100"
               }`}>
-                {report.status}
+                {t("enum.status." + report.status)}
               </span>
             </div>
             
@@ -581,13 +585,13 @@ export default function ActiveCaseView({
               </span>
               <span className="flex items-center gap-1 border-l border-slate-200 pl-4">
                 <Calendar className="w-3.5 h-3.5" />
-                Reported {new Date(report.createdAt).toLocaleDateString()}
+                {t("case.reported")} {new Date(report.createdAt).toLocaleDateString()}
               </span>
             </div>
           </div>
 
           <div className={`p-2.5 rounded-xl border flex flex-col items-center justify-center shrink-0 w-16 text-center ${severityColorMap[report.severity]}`}>
-            <span className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400">Severity</span>
+            <span className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400">{t("case.severity")}</span>
             <span className="text-lg font-black mt-0.5">
               {(report.severityScore / 10).toFixed(0)}/10
             </span>
@@ -602,7 +606,7 @@ export default function ActiveCaseView({
           {report.publicRisk && (
             <div className="pt-2 border-t border-slate-200 flex items-start gap-2 text-[11px] text-slate-500 font-medium">
               <span className="font-mono text-red-600 font-extrabold uppercase tracking-wide shrink-0 bg-red-50 px-1.5 py-0.5 rounded border border-red-100">
-                AI Public Risk Bound:
+                {t("case.publicRiskBound")}
               </span>
               <span>{report.publicRisk}</span>
             </div>
@@ -612,7 +616,7 @@ export default function ActiveCaseView({
         {/* Visual Before/After Section */}
         <div className="space-y-2">
           <h3 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">
-            Evidence Photo Audit (Multimodal Pipeline)
+            {t("case.photoAudit")}
           </h3>
           <div className="grid grid-cols-2 gap-4">
             {/* Before Photo */}
@@ -623,7 +627,7 @@ export default function ActiveCaseView({
                 className="w-full h-full object-cover"
               />
               <div className="absolute top-3 left-3 bg-red-600 text-white text-[9px] font-mono font-extrabold px-2.5 py-0.5 rounded uppercase tracking-wider shadow-md">
-                Before: Reported Issue
+                {t("case.before")}
               </div>
             </div>
 
@@ -636,7 +640,7 @@ export default function ActiveCaseView({
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute top-3 left-3 bg-emerald-600 text-white text-[9px] font-mono font-extrabold px-2.5 py-0.5 rounded uppercase tracking-wider shadow-md">
-                  After: Verified Fix
+                  {t("case.after")}
                 </div>
               </div>
             ) : (
@@ -645,10 +649,10 @@ export default function ActiveCaseView({
                   <div className="flex-1 flex flex-col items-center justify-center text-center">
                     <div className="w-8 h-8 rounded-full border-2 border-indigo-100 border-t-indigo-600 animate-spin mb-2" />
                     <span className="text-[10px] font-extrabold text-slate-800 uppercase tracking-wider">
-                      Gemini Audit In Progress
+                      {t("case.auditProgress")}
                     </span>
                     <span className="text-[8px] font-mono text-slate-400 mt-1 uppercase">
-                      Comparing pixel boundaries...
+                      {t("case.auditComparing")}
                     </span>
                   </div>
                 ) : closureResult ? (
@@ -672,17 +676,17 @@ export default function ActiveCaseView({
                       onClick={handleVerifyClosure}
                       className="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase py-1.5 rounded tracking-widest shadow"
                     >
-                      Verify Closure with Gemini
+                      {t("case.verifyClosure")}
                     </button>
                   </div>
                 ) : (
                   <div className="flex-1 flex flex-col items-center justify-center text-center py-2">
                     <UploadCloud className="w-7 h-7 text-slate-400 mb-1" />
                     <span className="text-[11px] font-extrabold text-slate-700 uppercase">
-                      Upload Closure Proof
+                      {t("case.uploadClosure")}
                     </span>
                     <span className="text-[9px] text-slate-400 mb-3">
-                      Select proof scenario below to test AI comparisons:
+                      {t("case.uploadHint")}
                     </span>
                     
                     {/* Presets Quick selectors */}
@@ -708,21 +712,21 @@ export default function ActiveCaseView({
         {/* Dynamic Structural Indicators */}
         <div className="grid grid-cols-3 gap-4">
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between">
-            <span className="text-[9px] text-slate-400 uppercase font-black tracking-wider">Duplicate Filter</span>
+            <span className="text-[9px] text-slate-400 uppercase font-black tracking-wider">{t("case.duplicateFilter")}</span>
             <span className="text-xs font-extrabold text-emerald-600 mt-1">
-              98.2% Unique (Verified)
+              98.2% {t("case.unique")}
             </span>
           </div>
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between">
-            <span className="text-[9px] text-slate-400 uppercase font-black tracking-wider">Routing Division</span>
+            <span className="text-[9px] text-slate-400 uppercase font-black tracking-wider">{t("case.routingDivision")}</span>
             <span className="text-xs font-extrabold text-slate-700 mt-1 truncate">
               {report.suggestedResolver.replace("BBMP", "").trim()}
             </span>
           </div>
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between">
-            <span className="text-[9px] text-slate-400 uppercase font-black tracking-wider">Verification Score</span>
+            <span className="text-[9px] text-slate-400 uppercase font-black tracking-wider">{t("case.verificationScore")}</span>
             <span className={`text-xs font-extrabold mt-1 ${report.verificationScore >= 60 ? "text-indigo-600" : "text-amber-600"}`}>
-              {report.verificationScore}% ({verifications.length} Neighbor Check)
+              {report.verificationScore}% ({verifications.length} {t("case.neighborCheck")})
             </span>
           </div>
         </div>
@@ -734,7 +738,7 @@ export default function ActiveCaseView({
               <div className="flex items-center gap-2">
                 <Navigation className="w-4 h-4 text-indigo-600" />
                 <span className="text-[10px] font-black uppercase tracking-widest text-indigo-700">
-                  Auto-Routed Civic Dispatch Ticket
+                  {t("case.dispatchTicket")}
                 </span>
               </div>
               <span className="font-mono text-[10px] font-extrabold text-indigo-500 bg-white px-2 py-0.5 rounded border border-indigo-100">
@@ -742,37 +746,48 @@ export default function ActiveCaseView({
               </span>
             </div>
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-3">
-              <Field label="Department" value={report.routing.department} />
-              <Field label="Division" value={report.routing.division} />
-              <Field label="Ward / Zone" value={report.routing.ward} />
-              <Field label="Intake Channel" value={report.routing.channel} />
+              <Field label={t("case.department")} value={report.routing.department} />
+              <Field label={t("case.division")} value={report.routing.division} />
+              <Field label={t("case.wardZone")} value={report.routing.ward} />
+              <Field label={t("case.channel")} value={report.routing.channel} />
             </div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">Target SLA</span>
+              <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">{t("case.targetSla")}</span>
               <span className={`text-xs font-black px-2 py-0.5 rounded ${report.routing.slaHours <= 12 ? "bg-red-100 text-red-700" : report.routing.slaHours <= 48 ? "bg-orange-100 text-orange-700" : "bg-slate-100 text-slate-600"}`}>
                 {report.routing.slaHours}h
               </span>
             </div>
             <div className="rounded-lg bg-white border border-indigo-100 p-2.5">
-              <span className="text-[9px] font-black uppercase tracking-wider text-indigo-400">Dispatch Note</span>
+              <span className="text-[9px] font-black uppercase tracking-wider text-indigo-400">{t("case.dispatchNote")}</span>
               <p className="text-[11px] text-slate-600 leading-relaxed font-medium mt-0.5">{report.routing.dispatchNote}</p>
             </div>
             <p className="text-[9px] text-slate-400 italic mt-2">
-              Routed via NammaFix mock resolver directory — a resolver-ready routing note, not a live government dispatch.
+              {t("case.mockNote")}
             </p>
           </div>
         )}
+
+        {/* Live Gemini translation of the AI packet into the selected language */}
+        <TranslatePacket
+          fields={{
+            Title: report.title,
+            ...(report.publicRisk ? { "Public Risk": report.publicRisk } : {}),
+            ...(report.recommendedNextAction ? { "Recommended Next Action": report.recommendedNextAction } : {}),
+            "Suggested Resolver": report.suggestedResolver,
+            ...(report.routing ? { "Dispatch Note": report.routing.dispatchNote } : {}),
+          }}
+        />
 
         {/* Neighbor Confirmations & comments */}
         <div className="pt-4 border-t border-slate-100 space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
               <MessageSquare className="w-3.5 h-3.5" />
-              Neighborhood Validation Feed ({verifications.length})
+              {t("case.feed")} ({verifications.length})
             </h3>
             {report.status !== "Resolved" && (
               <span className="text-[10px] text-slate-500 font-mono">
-                Threshold: 60% for Routing Auto-Milestone
+                {t("case.threshold")}
               </span>
             )}
           </div>
@@ -781,22 +796,25 @@ export default function ActiveCaseView({
           {report.status !== "Resolved" && !hasVerifiedSelf && !verifySuccess && (
             <div className="p-4 border border-indigo-100 bg-indigo-50/30 rounded-xl space-y-3">
               <span className="block text-[11px] font-extrabold text-indigo-900 uppercase">
-                Active Citizen Audit: Do you see this problem too?
+                {t("case.auditPrompt")}
               </span>
               <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={verifyComment}
-                  onChange={(e) => setVerifyComment(e.target.value)}
-                  placeholder="Add neighbor comment (E.g., verified present this morning, streets flooding...)"
-                  className="flex-1 bg-white border border-slate-200 rounded-lg p-2 text-xs font-medium focus:outline-indigo-500"
-                />
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    value={verifyComment}
+                    onChange={(e) => setVerifyComment(e.target.value)}
+                    placeholder={t("case.commentPlaceholder")}
+                    className="w-full bg-white border border-slate-200 rounded-lg p-2 pr-9 text-xs font-medium focus:outline-indigo-500"
+                  />
+                  <MicButton onTranscript={(txt) => setVerifyComment((p) => (p ? p + " " : "") + txt)} className="absolute right-1.5 top-1/2 -translate-y-1/2" />
+                </div>
                 <button
                   onClick={() => handleNeighborVerify("confirm")}
                   disabled={verifying}
                   className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-lg uppercase tracking-wider"
                 >
-                  Confirm Active
+                  {t("case.confirmActive")}
                 </button>
               </div>
             </div>
@@ -805,14 +823,14 @@ export default function ActiveCaseView({
           {verifySuccess && (
             <div className="p-3 bg-emerald-50 border border-emerald-100 text-emerald-800 text-xs rounded-lg flex items-center gap-2 font-bold">
               <Check className="w-4 h-4 text-emerald-600" />
-              <span>Neighbor verification submitted! Ward priority points scaled up.</span>
+              <span>{t("case.verifySuccess")}</span>
             </div>
           )}
 
           {/* Feed list */}
           <div className="space-y-3 max-h-[160px] overflow-y-auto">
             {verifications.length === 0 ? (
-              <p className="text-xs text-slate-400 italic">No neighbor validations submitted. Be the first to audit this spot.</p>
+              <p className="text-xs text-slate-400 italic">{t("case.noValidations")}</p>
             ) : (
               verifications.map((v) => (
                 <div key={v.id} className="p-3 bg-slate-50 border border-slate-100 rounded-lg space-y-1">
@@ -842,14 +860,14 @@ export default function ActiveCaseView({
             
             {loadingCopilot ? (
               <div className="space-y-1">
-                <p className="text-[10px] font-black text-indigo-900 uppercase">RUNNING RESOLVER COPILOT PROMPT</p>
+                <p className="text-[10px] font-black text-indigo-900 uppercase">{t("case.copilotRunning")}</p>
                 <div className="h-2 w-32 bg-indigo-200 animate-pulse rounded" />
               </div>
             ) : copilotData ? (
               <div>
                 <p className="text-[9px] font-black text-indigo-900 uppercase tracking-wide flex items-center gap-1">
                   <Sparkles className="w-3 h-3 text-orange-500 fill-orange-500" />
-                  Gemini Dispatch Note
+                  {t("case.copilotDispatchNote")}
                 </p>
                 <p className="text-xs text-indigo-800 line-clamp-1 italic font-medium">
                   "{copilotData.citizenUpdate}"
@@ -857,9 +875,9 @@ export default function ActiveCaseView({
               </div>
             ) : (
               <div>
-                <p className="text-[10px] font-black text-indigo-900 uppercase">Resolver Copilot Active</p>
+                <p className="text-[10px] font-black text-indigo-900 uppercase">{t("case.copilotActive")}</p>
                 <p className="text-[11px] text-indigo-700 italic">
-                  Run Gemini dispatch model to assist admin routing notes.
+                  {t("case.copilotHint")}
                 </p>
               </div>
             )}
@@ -872,14 +890,14 @@ export default function ActiveCaseView({
                 disabled={loadingCopilot}
                 className="px-4 py-2 bg-white text-indigo-600 border border-indigo-200 text-[10px] font-black rounded-lg uppercase tracking-wider hover:bg-indigo-50/50"
               >
-                Inspect Dispatch
+                {t("case.inspectDispatch")}
               </button>
             ) : (
               <button
                 onClick={handleRouteAction}
                 className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-black rounded-lg uppercase tracking-wider shadow"
               >
-                {report.status === "Routed" ? "Start Repairs" : "Approve Routing"}
+                {report.status === "Routed" ? t("case.startRepairs") : t("case.approveRouting")}
               </button>
             )}
           </div>

@@ -6,6 +6,8 @@
 import React from "react";
 import { User } from "../types";
 import { ShieldAlert, Award, Compass, MapPin, UserCheck } from "lucide-react";
+import { useT } from "../i18n";
+import LanguageSelector from "../i18n/LanguageSelector";
 
 interface HeaderProps {
   currentUser: User;
@@ -15,19 +17,20 @@ interface HeaderProps {
 }
 
 export default function Header({ currentUser, activeTab, setActiveTab, onHome }: HeaderProps) {
+  const { t } = useT();
   return (
-    <header className="h-16 flex items-center justify-between px-6 bg-white border-b border-slate-200 shrink-0">
+    <header className="h-16 flex items-center justify-between px-6 bg-cream border-b-2 border-ink/10 shrink-0">
       {/* Branding Logo — click to return to the landing page */}
       <button onClick={onHome} title="Back to home" className="flex items-center gap-3 text-left">
 
-        <div className="w-9 h-9 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-extrabold shadow-sm shadow-indigo-200">
+        <div className="w-9 h-9 bg-indigoc rounded-lg flex items-center justify-center text-marigold font-display font-extrabold shadow-sm">
           NF
         </div>
         <div className="flex flex-col">
-          <span className="text-lg font-extrabold tracking-tight text-slate-800 leading-none">
-            NammaFix <span className="text-indigo-600">AI</span>
+          <span className="text-lg font-display font-extrabold tracking-tight text-indigoc leading-none">
+            NammaFix <span className="text-saffron">AI</span>
           </span>
-          <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase mt-0.5">
+          <span className="text-[10px] font-mono tracking-wider text-ink/45 uppercase mt-0.5">
             Civic Resolution Layer
           </span>
         </div>
@@ -39,60 +42,61 @@ export default function Header({ currentUser, activeTab, setActiveTab, onHome }:
           onClick={() => setActiveTab("dashboard")}
           className={`h-full flex items-center px-2 border-b-2 font-semibold transition-all ${
             activeTab === "dashboard"
-              ? "text-indigo-600 border-indigo-600"
-              : "text-slate-500 border-transparent hover:text-slate-800"
+              ? "text-saffron border-saffron"
+              : "text-ink/55 border-transparent hover:text-ink"
           }`}
         >
           <Compass className="w-4 h-4 mr-1.5" />
-          Dashboard
+          {t("nav.dashboard")}
         </button>
         <button
           onClick={() => setActiveTab("map")}
           className={`h-full flex items-center px-2 border-b-2 font-semibold transition-all ${
             activeTab === "map"
-              ? "text-indigo-600 border-indigo-600"
-              : "text-slate-500 border-transparent hover:text-slate-800"
+              ? "text-saffron border-saffron"
+              : "text-ink/55 border-transparent hover:text-ink"
           }`}
         >
           <MapPin className="w-4 h-4 mr-1.5" />
-          Community Map
+          {t("nav.map")}
         </button>
         <button
           onClick={() => setActiveTab("missions")}
           className={`h-full flex items-center px-2 border-b-2 font-semibold transition-all ${
             activeTab === "missions"
-              ? "text-indigo-600 border-indigo-600"
-              : "text-slate-500 border-transparent hover:text-slate-800"
+              ? "text-saffron border-saffron"
+              : "text-ink/55 border-transparent hover:text-ink"
           }`}
         >
           <Award className="w-4 h-4 mr-1.5" />
-          Civic Missions
+          {t("nav.missions")}
         </button>
       </nav>
 
       {/* Karma Score and User Profile */}
       <div className="flex items-center gap-4">
+        <LanguageSelector />
         {/* Karma counter */}
         <div className="flex flex-col items-end">
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
-            Civic Karma
+          <span className="text-[9px] font-bold text-ink/45 uppercase tracking-widest">
+            {t("nav.karma")}
           </span>
           <div className="flex items-center gap-1.5">
-            <span className="text-sm font-black text-emerald-600">
+            <span className="text-sm font-black text-leaf">
               {currentUser.karma.toLocaleString()} Points
             </span>
-            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <div className="w-2 h-2 rounded-full bg-leaf animate-pulse" />
           </div>
         </div>
 
         {/* User Card */}
-        <div className="flex items-center gap-2 border-l border-slate-200 pl-4">
-          <div className="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 font-bold overflow-hidden shadow-inner">
-            <UserCheck className="w-4 h-4 text-slate-500" />
+        <div className="flex items-center gap-2 border-l border-ink/15 pl-4">
+          <div className="w-9 h-9 rounded-full bg-turmeric border-2 border-ink/15 flex items-center justify-center text-ink font-bold overflow-hidden">
+            <UserCheck className="w-4 h-4 text-indigoc" />
           </div>
           <div className="flex flex-col">
-            <span className="text-xs font-bold text-slate-800 leading-none">{currentUser.name}</span>
-            <span className="text-[9px] font-mono text-slate-400 mt-1 uppercase tracking-tight">
+            <span className="text-xs font-bold text-ink leading-none">{currentUser.name}</span>
+            <span className="text-[9px] font-mono text-ink/45 mt-1 uppercase tracking-tight">
               {currentUser.badges[0] || "Active Citizen"}
             </span>
           </div>

@@ -5,14 +5,15 @@
 
 import React, { useState, useEffect } from "react";
 import { Mission } from "../types";
-import { Sparkles, Trophy, CheckSquare, Target, Activity, Flame, ShieldAlert, BadgeInfo } from "lucide-react";
+import { Sparkles, Trophy, Target, Activity } from "lucide-react";
+import { useT } from "../i18n";
 
 interface ImpactStatsProps {
   apiCount: number;
-  incrementApiCount: () => void;
 }
 
-export default function ImpactStats({ apiCount, incrementApiCount }: ImpactStatsProps) {
+export default function ImpactStats({ apiCount }: ImpactStatsProps) {
+  const { t } = useT();
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -42,7 +43,7 @@ export default function ImpactStats({ apiCount, incrementApiCount }: ImpactStats
         <div className="flex flex-col items-center gap-2">
           <div className="w-6 h-6 rounded-full border-2 border-indigo-300 border-t-white animate-spin" />
           <span className="text-[10px] font-mono tracking-wider uppercase text-indigo-200">
-            Compiling Community Impact...
+            {t("impact.compiling")}
           </span>
         </div>
       </div>
@@ -59,7 +60,7 @@ export default function ImpactStats({ apiCount, incrementApiCount }: ImpactStats
 
         <h3 className="text-[9px] font-extrabold text-indigo-300 uppercase tracking-widest mb-4 flex items-center gap-1.5">
           <Target className="w-3.5 h-3.5" />
-          NammaFix Impact Metrics
+          {t("impact.metrics")}
         </h3>
 
         <div className="grid grid-cols-2 gap-4">
@@ -68,7 +69,7 @@ export default function ImpactStats({ apiCount, incrementApiCount }: ImpactStats
               {stats.resolved}
             </p>
             <p className="text-[9px] text-slate-400 uppercase font-black tracking-wider mt-0.5">
-              Resolved Issues
+              {t("impact.resolved")}
             </p>
           </div>
           <div>
@@ -76,7 +77,7 @@ export default function ImpactStats({ apiCount, incrementApiCount }: ImpactStats
               {stats.total}
             </p>
             <p className="text-[9px] text-slate-400 uppercase font-black tracking-wider mt-0.5">
-              Active Reports
+              {t("impact.active")}
             </p>
           </div>
           <div className="border-t border-slate-800 pt-3">
@@ -84,7 +85,7 @@ export default function ImpactStats({ apiCount, incrementApiCount }: ImpactStats
               {stats.verified}
             </p>
             <p className="text-[9px] text-slate-400 uppercase font-black tracking-wider mt-0.5">
-              Verified spots
+              {t("impact.verified")}
             </p>
           </div>
           <div className="border-t border-slate-800 pt-3">
@@ -92,7 +93,7 @@ export default function ImpactStats({ apiCount, incrementApiCount }: ImpactStats
               {stats.highRisk}
             </p>
             <p className="text-[9px] text-slate-400 uppercase font-black tracking-wider mt-0.5">
-              High Risk Open
+              {t("impact.highRisk")}
             </p>
           </div>
         </div>
@@ -103,10 +104,10 @@ export default function ImpactStats({ apiCount, incrementApiCount }: ImpactStats
         <div className="flex justify-between items-center">
           <span className="text-[9px] font-extrabold text-indigo-300 uppercase tracking-widest flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-indigo-300 animate-pulse fill-indigo-300" />
-            Gemini Analytical Summary
+            {t("impact.summary")}
           </span>
           <span className="text-[8px] font-mono text-indigo-400 bg-indigo-950 px-1.5 py-0.5 rounded border border-indigo-950 font-bold uppercase">
-            Live
+            {t("common.live")}
           </span>
         </div>
         
@@ -119,7 +120,7 @@ export default function ImpactStats({ apiCount, incrementApiCount }: ImpactStats
       <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-4 shrink-0">
         <h3 className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
           <Trophy className="w-3.5 h-3.5 text-orange-500" />
-          Active Civic Missions
+          {t("impact.activeMissions")}
         </h3>
 
         <div className="space-y-4">
@@ -140,7 +141,7 @@ export default function ImpactStats({ apiCount, incrementApiCount }: ImpactStats
                   </p>
                 </div>
                 <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">
-                  +{mission.bonusPoints} Karma
+                  +{mission.bonusPoints} {t("impact.karma")}
                 </span>
               </div>
               
@@ -153,7 +154,7 @@ export default function ImpactStats({ apiCount, incrementApiCount }: ImpactStats
                   />
                 </div>
                 <div className="flex justify-between text-[9px] text-slate-400 font-mono">
-                  <span>Progress</span>
+                  <span>{t("common.progress")}</span>
                   <span className="font-extrabold text-indigo-600">{mission.progress}%</span>
                 </div>
               </div>

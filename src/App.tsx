@@ -11,7 +11,8 @@ import ReportIssueView from "./components/ReportIssueView";
 import CommunityMapView from "./components/CommunityMapView";
 import ImpactStats from "./components/ImpactStats";
 import { Report, User, StatusEvent, Verification } from "./types";
-import { ClipboardList, AlertCircle, Sparkles, Filter, Navigation, PlusCircle, CheckCircle, Flame, Clock } from "lucide-react";
+import { ClipboardList, Filter, Navigation, PlusCircle, Clock } from "lucide-react";
+import { useT } from "./i18n";
 
 interface AppProps {
   initialTab?: string;        // deep-link from the landing page
@@ -20,6 +21,7 @@ interface AppProps {
 }
 
 export default function App({ initialTab = "dashboard", startReporting = false, onHome }: AppProps = {}) {
+  const { t } = useT();
   const [reports, setReports] = useState<Report[]>([]);
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const [timeline, setTimeline] = useState<StatusEvent[]>([]);
@@ -136,7 +138,7 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
   };
 
   return (
-    <div className="flex flex-col h-screen w-full bg-[#F1F5F9] font-sans text-slate-900 overflow-hidden">
+    <div className="flex flex-col h-screen w-full bg-cream font-body text-slate-900 overflow-hidden">
       {/* Header component */}
       <Header
         currentUser={currentUser}
@@ -171,7 +173,7 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
                 />
               ) : (
                 <div className="bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center p-8 text-center h-full">
-                  <span className="text-slate-400 italic">No report selected. Choose one below or submit a new case.</span>
+                  <span className="text-slate-400 italic">{t("app.empty")}</span>
                 </div>
               )}
 
@@ -182,7 +184,7 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
                   <div className="flex items-center gap-2">
                     <ClipboardList className="w-4 h-4 text-slate-500" />
                     <span className="text-xs font-black text-slate-400 uppercase tracking-widest">
-                      BBMP Ward 89 Operations Queue ({filteredReports.length})
+                      {t("app.queue")} ({filteredReports.length})
                     </span>
                   </div>
 
@@ -194,13 +196,13 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
                       onChange={(e) => setCategoryFilter(e.target.value)}
                       className="bg-slate-50 border border-slate-200 rounded px-1.5 py-0.5"
                     >
-                      <option value="All">All Categories</option>
-                      <option value="Road Damage">Road Damage</option>
-                      <option value="Waste">Waste</option>
-                      <option value="Streetlight">Streetlight</option>
-                      <option value="Water Leakage">Water Leakage</option>
-                      <option value="Drainage">Drainage</option>
-                      <option value="Public Safety">Public Safety</option>
+                      <option value="All">{t("app.filter.allCat")}</option>
+                      <option value="Road Damage">{t("enum.cat.Road Damage")}</option>
+                      <option value="Waste">{t("enum.cat.Waste")}</option>
+                      <option value="Streetlight">{t("enum.cat.Streetlight")}</option>
+                      <option value="Water Leakage">{t("enum.cat.Water Leakage")}</option>
+                      <option value="Drainage">{t("enum.cat.Drainage")}</option>
+                      <option value="Public Safety">{t("enum.cat.Public Safety")}</option>
                     </select>
                     
                     <select
@@ -208,13 +210,13 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
                       onChange={(e) => setStatusFilter(e.target.value)}
                       className="bg-slate-50 border border-slate-200 rounded px-1.5 py-0.5"
                     >
-                      <option value="All">All Statuses</option>
-                      <option value="Submitted">Submitted</option>
-                      <option value="AI Reviewed">AI Reviewed</option>
-                      <option value="Community Verified">Community Verified</option>
-                      <option value="Routed">Routed</option>
-                      <option value="In Progress">In Progress</option>
-                      <option value="Resolved">Resolved</option>
+                      <option value="All">{t("app.filter.allStatus")}</option>
+                      <option value="Submitted">{t("enum.status.Submitted")}</option>
+                      <option value="AI Reviewed">{t("enum.status.AI Reviewed")}</option>
+                      <option value="Community Verified">{t("enum.status.Community Verified")}</option>
+                      <option value="Routed">{t("enum.status.Routed")}</option>
+                      <option value="In Progress">{t("enum.status.In Progress")}</option>
+                      <option value="Resolved">{t("enum.status.Resolved")}</option>
                     </select>
                   </div>
                 </div>
@@ -222,9 +224,9 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
                 {/* Scannable Incident queue list */}
                 <div className="flex-1 overflow-y-auto space-y-2.5 pr-1">
                   {loading ? (
-                    <div className="py-8 text-center text-xs font-mono text-slate-400">LOADING OPERATIONS GRID...</div>
+                    <div className="py-8 text-center text-xs font-mono text-slate-400 uppercase">{t("app.loadingGrid")}</div>
                   ) : filteredReports.length === 0 ? (
-                    <div className="py-8 text-center text-xs text-slate-400 italic">No reports matches the filter criteria.</div>
+                    <div className="py-8 text-center text-xs text-slate-400 italic">{t("app.noMatch")}</div>
                   ) : (
                     filteredReports.map((r) => {
                       const isSelected = selectedReport?.id === r.id;
@@ -246,7 +248,7 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
                               <div className="flex items-center gap-2 mb-0.5 flex-wrap">
                                 <span className="font-mono font-extrabold text-[9px] text-slate-400">#{r.id}</span>
                                 <span className={`px-1.5 py-0.1 border text-[8px] font-bold rounded uppercase ${categoryColorBadge[r.category]}`}>
-                                  {r.category}
+                                  {t("enum.cat." + r.category)}
                                 </span>
                                 <span className="text-[9px] text-slate-400 font-mono truncate">{r.landmark}</span>
                               </div>
@@ -258,18 +260,18 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
 
                           <div className="flex items-center gap-4 shrink-0 text-right">
                             <div className="flex flex-col items-end shrink-0">
-                              <span className="text-[9px] font-mono font-bold text-slate-400 uppercase">Priority</span>
+                              <span className="text-[9px] font-mono font-bold text-slate-400 uppercase">{t("app.priority")}</span>
                               <span className={`text-xs font-black ${r.priorityScore >= 80 ? "text-red-500" : r.priorityScore >= 50 ? "text-orange-500" : "text-slate-700"}`}>
                                 {r.priorityScore}%
                               </span>
                             </div>
                             
                             <div className="flex flex-col items-end shrink-0 min-w-[70px]">
-                              <span className="text-[9px] font-mono font-bold text-slate-400 uppercase">Status</span>
+                              <span className="text-[9px] font-mono font-bold text-slate-400 uppercase">{t("app.status")}</span>
                               <span className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded leading-none ${
                                 r.status === "Resolved" ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-blue-50 text-blue-700"
                               }`}>
-                                {r.status}
+                                {t("enum.status." + r.status)}
                               </span>
                             </div>
                           </div>
@@ -288,7 +290,7 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
                 <div className="bg-white rounded-2xl border border-slate-200 p-5 flex flex-col max-h-[220px] shrink-0 overflow-hidden">
                   <h3 className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-1.5 shrink-0">
                     <Clock className="w-3.5 h-3.5" />
-                    Resolution Pipeline Timeline
+                    {t("app.timeline")}
                   </h3>
                   <div className="flex-1 overflow-y-auto pr-1 space-y-4">
                     {timeline.map((event, idx) => (
@@ -307,13 +309,13 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
                         
                         <div className="space-y-0.5">
                           <p className="text-[11px] font-black text-slate-800 leading-tight">
-                            {event.toStatus} Milestone reached
+                            {t("enum.status." + event.toStatus)} {t("app.milestoneReached")}
                           </p>
                           <p className="text-[10px] text-slate-500 leading-relaxed font-sans font-medium">
                             {event.note}
                           </p>
                           <p className="text-[9px] text-slate-400 font-mono uppercase">
-                            Logged by {event.changedBy} · {new Date(event.createdAt).toLocaleTimeString()}
+                            {t("app.loggedBy")} {event.changedBy} · {new Date(event.createdAt).toLocaleTimeString()}
                           </p>
                         </div>
                       </div>
@@ -324,7 +326,7 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
 
               {/* Impact stats and bento metrics */}
               <div className="flex-1 overflow-y-auto pr-1">
-                <ImpactStats apiCount={apiCount} incrementApiCount={incrementApiCount} />
+                <ImpactStats apiCount={apiCount} />
               </div>
 
               {/* Action Quick Bar */}
@@ -334,14 +336,14 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
                   className="p-3 bg-white border border-slate-200 rounded-xl text-center hover:bg-slate-50 transition-all flex flex-col items-center justify-center gap-1 group"
                 >
                   <PlusCircle className="w-5 h-5 text-indigo-600 group-hover:scale-110 transition-all" />
-                  <span className="text-[9px] font-extrabold uppercase text-slate-500 tracking-wider">Report New Spot</span>
+                  <span className="text-[9px] font-extrabold uppercase text-slate-500 tracking-wider">{t("app.quick.report")}</span>
                 </button>
                 <button
                   onClick={() => setActiveTab("map")}
                   className="p-3 bg-white border border-slate-200 rounded-xl text-center hover:bg-slate-50 transition-all flex flex-col items-center justify-center gap-1 group"
                 >
                   <Navigation className="w-5 h-5 text-slate-600 group-hover:scale-110 transition-all" />
-                  <span className="text-[9px] font-extrabold uppercase text-slate-500 tracking-wider">Operations Map</span>
+                  <span className="text-[9px] font-extrabold uppercase text-slate-500 tracking-wider">{t("app.quick.map")}</span>
                 </button>
               </div>
             </div>
@@ -363,26 +365,26 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
         {/* CIVIC MISSIONS DETAILS TAB */}
         {activeTab === "missions" && (
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex-1 overflow-y-auto">
-            <h2 className="text-lg font-black text-slate-800 mb-2">🏆 BBMP Ward 89 - Civic Mission Guild</h2>
-            <p className="text-xs text-slate-500 mb-6">Explore regional missions. Complete validations or resolve targets to obtain exclusive badges and multiplier karma points.</p>
+            <h2 className="text-lg font-black text-slate-800 mb-2">🏆 {t("missions.title")}</h2>
+            <p className="text-xs text-slate-500 mb-6">{t("missions.subtitle")}</p>
             <div className="grid grid-cols-3 gap-6">
               <div className="bg-slate-50 border border-slate-100 p-5 rounded-2xl space-y-4">
                 <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center text-lg">☔</div>
-                <h3 className="font-extrabold text-sm text-slate-800">Monsoon Preparedness Guild</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">Report and confirm waterlogged streets, damaged drain grates, or dangerous roadside electrical poles around Yelahanka.</p>
-                <div className="bg-indigo-600 text-white font-bold text-[9px] uppercase px-2.5 py-1 rounded inline-block">Active Mission · +30 Bonus</div>
+                <h3 className="font-extrabold text-sm text-slate-800">{t("missions.monsoon.title")}</h3>
+                <p className="text-xs text-slate-500 leading-relaxed">{t("missions.monsoon.body")}</p>
+                <div className="bg-indigo-600 text-white font-bold text-[9px] uppercase px-2.5 py-1 rounded inline-block">{t("missions.monsoon.tag")}</div>
               </div>
               <div className="bg-slate-50 border border-slate-100 p-5 rounded-2xl space-y-4">
                 <div className="w-12 h-12 rounded-xl bg-yellow-100 flex items-center justify-center text-lg">♻️</div>
-                <h3 className="font-extrabold text-sm text-slate-800">Clean Commercial Corridor</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">Report and verify commercial waste dumping blackspots near main avenues and promote compliance with waste segregations.</p>
-                <div className="bg-indigo-600 text-white font-bold text-[9px] uppercase px-2.5 py-1 rounded inline-block">Active Mission · +20 Bonus</div>
+                <h3 className="font-extrabold text-sm text-slate-800">{t("missions.clean.title")}</h3>
+                <p className="text-xs text-slate-500 leading-relaxed">{t("missions.clean.body")}</p>
+                <div className="bg-indigo-600 text-white font-bold text-[9px] uppercase px-2.5 py-1 rounded inline-block">{t("missions.clean.tag")}</div>
               </div>
               <div className="bg-slate-50 border border-slate-100 p-5 rounded-2xl space-y-4 opacity-50">
                 <div className="w-12 h-12 rounded-xl bg-slate-200 flex items-center justify-center text-lg">💡</div>
-                <h3 className="font-extrabold text-sm text-slate-800">Night Light Auditing</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">Completed. Walk dark corridors, identify dead luminaires, and confirm newly installed LED street lamps.</p>
-                <div className="bg-slate-300 text-slate-700 font-bold text-[9px] uppercase px-2.5 py-1 rounded inline-block">Unlocked & Finished</div>
+                <h3 className="font-extrabold text-sm text-slate-800">{t("missions.night.title")}</h3>
+                <p className="text-xs text-slate-500 leading-relaxed">{t("missions.night.body")}</p>
+                <div className="bg-slate-300 text-slate-700 font-bold text-[9px] uppercase px-2.5 py-1 rounded inline-block">{t("missions.night.tag")}</div>
               </div>
             </div>
           </div>
