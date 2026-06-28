@@ -38,13 +38,30 @@ if (apiKey && apiKey !== "MY_GEMINI_API_KEY") {
 }
 
 // Simulated Database State (persisted in memory for active demo)
-const database = {
+const database: any = {
   reports: [...initialReports],
   users: [...initialUsers],
   statusEvents: [...initialStatusEvents],
   verifications: [...initialVerifications],
-  missions: [...initialMissions]
+  missions: [...initialMissions],
+  notifications: [] as any[] // citizen "your issue was fixed" feed (closes the loop)
 };
+
+// Notify the original reporter that their issue reached a resolution.
+function notifyResolved(report: any, closureImageUrl?: string) {
+  database.notifications.unshift({
+    id: `NT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    userId: report.createdBy,
+    reportId: report.id,
+    type: "resolved",
+    title: report.title,
+    landmark: report.landmark,
+    beforeImageUrl: report.imageUrl,
+    afterImageUrl: closureImageUrl || report.closureImageUrl || "",
+    read: false,
+    createdAt: new Date().toISOString()
+  });
+}
 
 // Simple helper to parse base64 data strings for Gemini input
 function parseBase64Image(base64Str: string) {
@@ -170,6 +187,10 @@ function routeReport(report: Report): RoutingTicket {
 database.reports.forEach((r) => {
   if (!r.routing) r.routing = routeReport(r);
 });
+
+// Backfill resolution notifications for already-resolved seed reports so the
+// citizen's "your issue was fixed" feed is populated on first load.
+database.reports.filter((r) => r.status === "Resolved").forEach((r) => notifyResolved(r));
 
 // ==========================================
 // API ROUTES FIRST
@@ -581,6 +602,8 @@ app.post("/api/reports/:id/update-status", (req, res) => {
   report.status = status;
   report.updatedAt = new Date().toISOString();
 
+  if (status === "Resolved" && previousStatus !== "Resolved") notifyResolved(report);
+
   // Record status event
   const event: StatusEvent = {
     id: `SE-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -677,6 +700,7 @@ app.post("/api/reports/:id/close", async (req, res) => {
     // Map verification status to report state
     if (verificationOutput.closureStatus === "Verified Resolved") {
       report.status = "Resolved";
+      notifyResolved(report, closureImageUrl); // close the loop to the original reporter
     } else if (verificationOutput.closureStatus === "Partially Resolved") {
       report.status = "In Progress"; // Keep active but note progress
     }
@@ -803,6 +827,62 @@ app.get("/api/stats", async (req, res) => {
     aiSummary,
     missions: database.missions
   });
+});
+
+// GET predict - Gemini civic forecast: likely hotspots, seasonal risks, a recommended
+// pre-emptive mission. On-demand (button) to limit quota use; falls back to a canned
+// forecast if the model is unavailable / quota-exhausted, so the demo never breaks.
+app.get("/api/predict", async (req, res) => {
+  const reports = database.reports;
+
+  let forecast: any = {
+    hotspots: [
+      { area: "BBMP Ward 89 · Indiranagar", issue: "Recurring crater potholes near school zones", reason: "Repeated road-damage reports with high verification along the 100ft Road corridor." },
+      { area: "Koramangala 3rd Block", issue: "Storm-water drain overflow risk", reason: "Clustered drainage and water-leakage reports ahead of the monsoon." }
+    ],
+    seasonalRisks: [
+      { risk: "Pre-monsoon waterlogging", window: "Next 3–6 weeks", recommendedAction: "Pre-emptively desilt flagged drains and barricade open craters near schools." }
+    ],
+    recommendedMission: { title: "Monsoon Drain Watch", why: "Drainage and water issues are trending up; a focused mission front-loads verification before the rains." },
+    confidence: 0.7,
+    simulated: true
+  };
+
+  if (aiClient && reports.length) {
+    try {
+      console.log("Generating predictive civic forecast from active reports...");
+      const payload = reports.map((r) => ({
+        category: r.category, severity: r.severity, status: r.status,
+        ward: r.routing?.ward || r.landmark, createdAt: r.createdAt
+      }));
+      const response = await aiClient.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: `You are a civic analytics forecasting agent for Bangalore. Given these recent civic reports: ${JSON.stringify(payload)}.
+Predict where issues are likely to worsen and what to do pre-emptively (consider category clustering, severity, recency, and monsoon seasonality). Return ONLY JSON:
+{"hotspots":[{"area":"","issue":"","reason":""}],"seasonalRisks":[{"risk":"","window":"","recommendedAction":""}],"recommendedMission":{"title":"","why":""},"confidence":0.0}`,
+        config: { responseMimeType: "application/json" }
+      });
+      const text = (response.text || "").trim().replace(/^```json\s*/i, "").replace(/```\s*$/, "");
+      forecast = { ...JSON.parse(text), simulated: false };
+    } catch (err) {
+      console.error("Forecast failed, using fallback:", err);
+    }
+  }
+
+  res.json(forecast);
+});
+
+// GET notifications - the citizen's "your issue was fixed" feed (closes the loop).
+app.get("/api/notifications", (req, res) => {
+  const userId = (req.query.userId as string) || "u_002";
+  res.json(database.notifications.filter((n: any) => n.userId === userId));
+});
+
+// POST notifications/read - mark this user's notifications as read.
+app.post("/api/notifications/read", (req, res) => {
+  const userId = (req.body?.userId as string) || "u_002";
+  database.notifications.forEach((n: any) => { if (n.userId === userId) n.read = true; });
+  res.json({ ok: true });
 });
 
 // GET users

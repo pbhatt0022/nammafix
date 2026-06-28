@@ -8,25 +8,29 @@ import { User } from "../types";
 import { ShieldAlert, Award, Compass, MapPin, UserCheck } from "lucide-react";
 import { useT } from "../i18n";
 import LanguageSelector from "../i18n/LanguageSelector";
+import NotificationBell from "./NotificationBell";
 
 interface HeaderProps {
   currentUser: User;
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onHome?: () => void; // return to the landing page
+  notifUserId?: string;
+  apiCount?: number;
+  onOpenReport?: (reportId: string) => void;
 }
 
-export default function Header({ currentUser, activeTab, setActiveTab, onHome }: HeaderProps) {
+export default function Header({ currentUser, activeTab, setActiveTab, onHome, notifUserId, apiCount, onOpenReport }: HeaderProps) {
   const { t } = useT();
   return (
-    <header className="h-16 flex items-center justify-between px-6 bg-cream border-b-2 border-ink/10 shrink-0">
+    <header className="h-16 flex items-center justify-between gap-2 px-4 sm:px-6 bg-cream border-b-2 border-ink/10 shrink-0">
       {/* Branding Logo — click to return to the landing page */}
-      <button onClick={onHome} title="Back to home" className="flex items-center gap-3 text-left">
+      <button onClick={onHome} title="Back to home" className="flex items-center gap-3 text-left shrink-0">
 
         <div className="w-9 h-9 bg-indigoc rounded-lg flex items-center justify-center text-marigold font-display font-extrabold shadow-sm">
           NF
         </div>
-        <div className="flex flex-col">
+        <div className="hidden sm:flex flex-col">
           <span className="text-lg font-display font-extrabold tracking-tight text-indigoc leading-none">
             NammaFix <span className="text-saffron">AI</span>
           </span>
@@ -37,7 +41,7 @@ export default function Header({ currentUser, activeTab, setActiveTab, onHome }:
       </button>
 
       {/* Navigation Links */}
-      <nav className="flex items-center gap-6 text-sm font-medium h-full">
+      <nav className="flex items-center gap-2 sm:gap-6 text-sm font-medium h-full overflow-x-auto">
         <button
           onClick={() => setActiveTab("dashboard")}
           className={`h-full flex items-center px-2 border-b-2 font-semibold transition-all ${
@@ -74,10 +78,13 @@ export default function Header({ currentUser, activeTab, setActiveTab, onHome }:
       </nav>
 
       {/* Karma Score and User Profile */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+        {notifUserId && onOpenReport && (
+          <NotificationBell userId={notifUserId} apiCount={apiCount ?? 0} onOpenReport={onOpenReport} />
+        )}
         <LanguageSelector />
         {/* Karma counter */}
-        <div className="flex flex-col items-end">
+        <div className="hidden md:flex flex-col items-end">
           <span className="text-[9px] font-bold text-ink/45 uppercase tracking-widest">
             {t("nav.karma")}
           </span>
@@ -90,7 +97,7 @@ export default function Header({ currentUser, activeTab, setActiveTab, onHome }:
         </div>
 
         {/* User Card */}
-        <div className="flex items-center gap-2 border-l border-ink/15 pl-4">
+        <div className="hidden sm:flex items-center gap-2 border-l border-ink/15 pl-4">
           <div className="w-9 h-9 rounded-full bg-turmeric border-2 border-ink/15 flex items-center justify-center text-ink font-bold overflow-hidden">
             <UserCheck className="w-4 h-4 text-indigoc" />
           </div>

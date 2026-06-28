@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Mission } from "../types";
-import { Sparkles, Trophy, Target, Activity } from "lucide-react";
+import { Sparkles, Trophy, Target, Activity, TrendingUp, CloudRain, Loader2 } from "lucide-react";
 import { useT } from "../i18n";
 
 interface ImpactStatsProps {
@@ -16,6 +16,21 @@ export default function ImpactStats({ apiCount }: ImpactStatsProps) {
   const { t } = useT();
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  // Predictive forecast — generated on demand (button) to keep Gemini quota use low.
+  const [forecast, setForecast] = useState<any>(null);
+  const [forecasting, setForecasting] = useState(false);
+  const runForecast = async () => {
+    setForecasting(true);
+    try {
+      const res = await fetch("/api/predict");
+      if (res.ok) setForecast(await res.json());
+    } catch (err) {
+      console.error("Forecast failed:", err);
+    } finally {
+      setForecasting(false);
+    }
+  };
 
   // Fetch aggregate database statistics and Gemini local summaries
   const fetchStats = async () => {
@@ -114,6 +129,72 @@ export default function ImpactStats({ apiCount }: ImpactStatsProps) {
         <p className="text-xs italic leading-relaxed text-indigo-100 font-medium font-sans">
           "{stats.aiSummary}"
         </p>
+      </div>
+
+      {/* Predictive Insights (on-demand Gemini forecast) */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shrink-0">
+        <div className="flex justify-between items-center">
+          <h3 className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+            <TrendingUp className="w-3.5 h-3.5 text-lotus" />
+            {t("predict.title")}
+          </h3>
+          {forecast && (
+            <span className={`text-[8px] font-mono font-bold uppercase px-1.5 py-0.5 rounded border ${
+              forecast.simulated ? "text-slate-500 bg-slate-50 border-slate-100" : "text-emerald-700 bg-emerald-50 border-emerald-100"
+            }`}>
+              {forecast.simulated ? t("predict.simulated") : t("predict.gemini")}
+            </span>
+          )}
+        </div>
+
+        {!forecast ? (
+          <button
+            onClick={runForecast}
+            disabled={forecasting}
+            className="w-full py-2 bg-lotus/10 hover:bg-lotus/15 text-lotus border border-lotus/30 rounded-lg text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 disabled:opacity-60"
+          >
+            {forecasting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+            {forecasting ? t("predict.loading") : t("predict.cta")}
+          </button>
+        ) : (
+          <div className="space-y-3">
+            <div>
+              <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">{t("predict.hotspots")}</span>
+              <div className="mt-1 space-y-1.5">
+                {(forecast.hotspots || []).slice(0, 3).map((h: any, i: number) => (
+                  <div key={i} className="p-2 bg-slate-50 border border-slate-100 rounded-lg">
+                    <p className="text-[11px] font-extrabold text-slate-800 leading-tight">{h.area}</p>
+                    <p className="text-[10px] text-slate-600 leading-tight">{h.issue}</p>
+                    <p className="text-[9px] text-slate-400 italic leading-tight mt-0.5">{h.reason}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {(forecast.seasonalRisks || []).length > 0 && (
+              <div>
+                <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">{t("predict.risks")}</span>
+                {(forecast.seasonalRisks || []).slice(0, 2).map((r: any, i: number) => (
+                  <div key={i} className="mt-1 p-2 bg-peacock/5 border border-peacock/20 rounded-lg flex items-start gap-2">
+                    <CloudRain className="w-3.5 h-3.5 text-peacock shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-[11px] font-bold text-slate-800 leading-tight">{r.risk} <span className="font-mono text-[9px] text-peacock">· {r.window}</span></p>
+                      <p className="text-[10px] text-slate-600 leading-tight">{r.recommendedAction}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {forecast.recommendedMission && (
+              <div className="p-2.5 bg-lotus/10 border border-lotus/30 rounded-lg">
+                <span className="text-[9px] font-black uppercase tracking-wider text-lotus">{t("predict.mission")}</span>
+                <p className="text-[11px] font-extrabold text-slate-800 leading-tight">{forecast.recommendedMission.title}</p>
+                <p className="text-[10px] text-slate-600 leading-tight">{forecast.recommendedMission.why}</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Community Missions tracker */}

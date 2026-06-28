@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import Landing from "./landing/Landing";
 import App from "./App";
 import { LanguageProvider } from "./i18n";
+import ErrorBoundary from "./ErrorBoundary";
 
 function RootInner() {
   const [entered, setEntered] = useState(false);
@@ -31,7 +32,9 @@ function RootInner() {
 export default function Root() {
   return (
     <LanguageProvider>
-      <RootInner />
+      <ErrorBoundary>
+        <RootInner />
+      </ErrorBoundary>
     </LanguageProvider>
   );
 }

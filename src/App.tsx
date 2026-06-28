@@ -138,12 +138,21 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
   };
 
   return (
-    <div className="flex flex-col h-screen w-full bg-cream font-body text-slate-900 overflow-hidden">
+    <div className="flex flex-col min-h-screen lg:h-screen w-full bg-cream font-body text-slate-900 lg:overflow-hidden">
       {/* Header component */}
       <Header
         currentUser={currentUser}
         activeTab={activeTab}
         onHome={onHome}
+        notifUserId={demoUserId}
+        apiCount={apiCount}
+        onOpenReport={(id) => {
+          const r = reports.find((x) => x.id === id);
+          if (r) {
+            handleSelectReport(r);
+            setActiveTab("dashboard");
+          }
+        }}
         setActiveTab={(tab) => {
           setActiveTab(tab);
           setIsReporting(false);
@@ -151,11 +160,11 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
       />
 
       {/* Main Core Dashboard Grid */}
-      <main className="flex-1 flex gap-6 p-6 overflow-hidden min-h-0">
+      <main className="flex-1 flex flex-col lg:flex-row gap-6 p-4 lg:p-6 lg:overflow-hidden min-h-0">
         {activeTab === "dashboard" && (
           <>
             {/* LEFT COLUMN: ACTIVE CASE ANALYSIS OR FORM (3/5 WIDTH) */}
-            <div className="w-3/5 flex flex-col gap-6 h-full overflow-hidden">
+            <div className="w-full lg:w-3/5 flex flex-col gap-6 lg:h-full lg:overflow-hidden">
               {isReporting ? (
                 <ReportIssueView
                   onSuccess={handleReportSuccess}
@@ -284,7 +293,7 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
             </div>
 
             {/* RIGHT COLUMN: TIMELINE, STATS & QUICK ACTIONS (2/5 WIDTH) */}
-            <div className="w-2/5 flex flex-col gap-6 h-full overflow-hidden shrink-0">
+            <div className="w-full lg:w-2/5 flex flex-col gap-6 lg:h-full lg:overflow-hidden shrink-0">
               {/* Resolution Pipeline Timeline */}
               {selectedReport && (
                 <div className="bg-white rounded-2xl border border-slate-200 p-5 flex flex-col max-h-[220px] shrink-0 overflow-hidden">
@@ -367,7 +376,7 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex-1 overflow-y-auto">
             <h2 className="text-lg font-black text-slate-800 mb-2">🏆 {t("missions.title")}</h2>
             <p className="text-xs text-slate-500 mb-6">{t("missions.subtitle")}</p>
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="bg-slate-50 border border-slate-100 p-5 rounded-2xl space-y-4">
                 <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center text-lg">☔</div>
                 <h3 className="font-extrabold text-sm text-slate-800">{t("missions.monsoon.title")}</h3>
