@@ -10,6 +10,7 @@ import ActiveCaseView from "./components/ActiveCaseView";
 import ReportIssueView from "./components/ReportIssueView";
 import CommunityMapView from "./components/CommunityMapView";
 import ImpactStats from "./components/ImpactStats";
+import CivicProfileView from "./components/CivicProfileView";
 import { Report, User, StatusEvent, Verification } from "./types";
 import { ClipboardList, Filter, Navigation, PlusCircle, Clock } from "lucide-react";
 import { useT } from "./i18n";
@@ -397,6 +398,11 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
               </div>
             </div>
           </div>
+        )}
+
+        {/* CIVIC KARMA PROFILE TAB */}
+        {activeTab === "profile" && (
+          <CivicProfileView user={currentUser} users={users} reports={reports} />
         )}
       </main>
 

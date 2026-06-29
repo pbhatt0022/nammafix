@@ -96,18 +96,22 @@ export default function Header({ currentUser, activeTab, setActiveTab, onHome, n
           </div>
         </div>
 
-        {/* User Card */}
-        <div className="hidden sm:flex items-center gap-2 border-l border-ink/15 pl-4">
+        {/* User Card — opens the Civic Karma passbook */}
+        <button
+          onClick={() => setActiveTab("profile")}
+          title={t("nav.profile")}
+          className={`hidden sm:flex items-center gap-2 border-l border-ink/15 pl-4 transition-opacity hover:opacity-80 ${activeTab === "profile" ? "opacity-100" : ""}`}
+        >
           <div className="w-9 h-9 rounded-full bg-turmeric border-2 border-ink/15 flex items-center justify-center text-ink font-bold overflow-hidden">
             <UserCheck className="w-4 h-4 text-indigoc" />
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col text-left">
             <span className="text-xs font-bold text-ink leading-none">{currentUser.name}</span>
             <span className="text-[9px] font-mono text-ink/45 mt-1 uppercase tracking-tight">
               {currentUser.badges[0] || "Active Citizen"}
             </span>
           </div>
-        </div>
+        </button>
       </div>
     </header>
   );
