@@ -161,20 +161,14 @@ This makes the app feel much closer to how real citizens think: first identify t
 
 ## Screenshots
 
-Add these 3 screenshots before final submission so judges can scan the product in seconds:
+**Citizen reporting flow** — photo upload → AI Evidence Packet → duplicate detection  
+![Report flow](docs/screenshots/report-flow.png)
 
-1. **Citizen reporting flow**  
-   Upload image -> AI Evidence Packet -> duplicate warning
-2. **Active case view**  
-   Routing ticket, verification status, and closure audit result
-3. **Impact + Karma dashboard**  
-   Ward insights, hotspot forecast, and Civic Karma profile
+**Active case view** — routing ticket, community verification, closure audit  
+![Active case](docs/screenshots/active-case.png)
 
-Recommended paths once exported:
-
-- `docs/screenshots/report-flow.png`
-- `docs/screenshots/active-case.png`
-- `docs/screenshots/impact-dashboard.png`
+**Civic Karma passbook** — ward rank, earned badges, contribution history  
+![Impact dashboard](docs/screenshots/impact-dashboard.png)
 
 ---
 
