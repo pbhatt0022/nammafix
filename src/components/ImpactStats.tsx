@@ -111,6 +111,15 @@ export default function ImpactStats({ apiCount }: ImpactStatsProps) {
               {t("impact.highRisk")}
             </p>
           </div>
+          {stats.mergedCount > 0 && (
+            <div className="col-span-2 border-t border-slate-800 pt-3 flex items-center justify-between">
+              <div>
+                <p className="text-2xl font-black text-amber-400 tracking-tight">{stats.mergedCount}</p>
+                <p className="text-[9px] text-slate-400 uppercase font-black tracking-wider mt-0.5">Reports Consolidated</p>
+              </div>
+              <p className="text-[9px] text-slate-500 font-mono text-right leading-snug">Duplicate evidence<br/>merged, not filed</p>
+            </div>
+          )}
         </div>
       </div>
 

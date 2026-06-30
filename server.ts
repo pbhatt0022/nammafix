@@ -80,6 +80,16 @@ function parseBase64Image(base64Str: string) {
   };
 }
 
+// Safe JSON parse — returns null on malformed Gemini output instead of crashing.
+function safeJSON<T>(text: string, fallback: T | null = null): T | null {
+  try {
+    const clean = text.trim().replace(/^```json\s*/i, "").replace(/```\s*$/, "");
+    return JSON.parse(clean) as T;
+  } catch {
+    return fallback;
+  }
+}
+
 // ==========================================
 // DUPLICATE DETECTION: Rule-based matching
 // ==========================================
@@ -268,9 +278,7 @@ app.post("/api/reports", async (req, res) => {
         const rawText = response.text ? response.text.trim() : "";
         console.log("Raw Gemini Response received:", rawText);
         
-        // Clean markdown response markers if present
-        const jsonText = rawText.replace(/^```json\s*/i, "").replace(/```\s*$/, "");
-        aiOutput = JSON.parse(jsonText);
+        aiOutput = safeJSON(rawText);
       } catch (geminiError) {
         console.error("Gemini invocation failed, dropping into intelligent rule fallback:", geminiError);
       }
@@ -619,8 +627,7 @@ app.post("/api/reports/:id/copilot", async (req, res) => {
       });
 
       const rawText = response.text ? response.text.trim() : "";
-      const jsonText = rawText.replace(/^```json\s*/i, "").replace(/```\s*$/, "");
-      copilotOutput = JSON.parse(jsonText);
+      copilotOutput = safeJSON(rawText);
     } catch (err) {
       console.error("Resolver Copilot Gemini API call failed:", err);
     }
@@ -729,8 +736,7 @@ app.post("/api/reports/:id/close", async (req, res) => {
         });
 
         const rawText = response.text ? response.text.trim() : "";
-        const jsonText = rawText.replace(/^```json\s*/i, "").replace(/```\s*$/, "");
-        verificationOutput = JSON.parse(jsonText);
+        verificationOutput = safeJSON(rawText);
       } catch (err) {
         console.error("Gemini closure verification failed, falling back to rule audit:", err);
       }
@@ -810,8 +816,9 @@ app.post("/api/translate", async (req, res) => {
       contents: prompt,
       config: { responseMimeType: "application/json" }
     });
-    const text = (r.text || "").trim().replace(/^```json\s*/i, "").replace(/```\s*$/, "");
-    res.json({ translations: JSON.parse(text) });
+    const parsed = safeJSON<Record<string, Record<string, string>>>((r.text || "").trim());
+    if (!parsed) throw new Error("Gemini returned unparseable translation JSON.");
+    res.json({ translations: parsed });
   } catch (err: any) {
     console.error("Translation failed:", err);
     res.status(500).json({ error: err.message || "Translation failed." });
@@ -830,6 +837,10 @@ app.get("/api/stats", async (req, res) => {
 
   const highRisk = reports.filter(
     (r) => (r.severity === "High" || r.severity === "Critical") && r.status !== "Resolved"
+  ).length;
+
+  const mergedCount = database.statusEvents.filter((e: any) =>
+    e.note && e.note.includes("Fresh photo evidence merged")
   ).length;
 
   // Group by category
@@ -878,6 +889,7 @@ app.get("/api/stats", async (req, res) => {
     verified,
     reviewed,
     highRisk,
+    mergedCount,
     categoryStats,
     aiSummary,
     missions: database.missions
@@ -917,8 +929,8 @@ Predict where issues are likely to worsen and what to do pre-emptively (consider
 {"hotspots":[{"area":"","issue":"","reason":""}],"seasonalRisks":[{"risk":"","window":"","recommendedAction":""}],"recommendedMission":{"title":"","why":""},"confidence":0.0}`,
         config: { responseMimeType: "application/json" }
       });
-      const text = (response.text || "").trim().replace(/^```json\s*/i, "").replace(/```\s*$/, "");
-      forecast = { ...JSON.parse(text), simulated: false };
+      const parsed = safeJSON<any>((response.text || "").trim());
+      if (parsed) forecast = { ...parsed, simulated: false };
     } catch (err) {
       console.error("Forecast failed, using fallback:", err);
     }

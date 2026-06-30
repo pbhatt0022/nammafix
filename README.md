@@ -1,118 +1,270 @@
 # NammaFix AI
 
-**Vibe2Ship 2026 · Community Hero – Hyperlocal Problem Solver**
+**Vibe2Ship 2026 Submission**  
+**Problem Statement:** Community Hero - Hyperlocal Problem Solver
 
-> A Gemini-powered civic resolution platform that turns a citizen photo into a structured AI Evidence Packet, auto-routes it to the right municipal authority, mobilises neighbours to verify it, and tracks it to a proven fix — rewarding real civic contribution at every step.
+NammaFix AI is a Gemini-powered civic resolution platform for Indian neighborhoods. A citizen uploads a photo of a pothole, garbage pile, leaking pipe, or broken streetlight, and NammaFix turns that raw report into a structured **AI Evidence Packet**, checks for duplicates, routes it to the right civic department, gets neighbors to verify it, tracks it to closure, and rewards verified civic action with **Civic Karma**.
 
 **Live demo:** https://nammafix-ai-564629031889.asia-southeast1.run.app  
-**GitHub:** https://github.com/pbhatt0022/nammafix
+**Repository:** https://github.com/pbhatt0022/nammafix
 
 ---
 
-## The Problem
+## Tech Highlights
 
-Bengaluru's civic issues don't disappear. They accumulate — the same pothole reported ten times across ten WhatsApp groups, with no single authority owning resolution, no before/after proof, and no feedback to the citizen who filed it.
-
-Existing platforms digitise the *complaint*. They don't resolve it. NammaFix AI resolves it.
-
----
-
-## The Agentic Pipeline
-
-A single photo triggers a multi-step Gemini workflow — not a form submission:
-
-```
-Photo  →  AI Evidence Packet  →  Duplicate Gate  →  Auto-Routing  →
-Community Verification  →  Resolver Copilot  →  Closure Proof  →
-Civic Karma  →  Ward Impact Dashboard
-```
-
-Each arrow is a distinct Gemini agent action. The pipeline demonstrates a full `Plan → Act → Reflect` loop: Gemini *plans* what evidence is needed, *acts* to classify and route, and *reflects* at closure by comparing before/after photos to verify the fix is real — not self-reported.
-
-### The Six Gemini Agent Calls
-
-| Agent | Gemini's Role | When It Fires |
-|---|---|---|
-| **Multimodal Intake** | Image + text → category, severity score, public risk, evidence observed, missing info, recommended action (structured JSON) | Citizen submits a photo |
-| **Duplicate Gate** | Haversine geo proximity + keyword overlap against live reports → merge recommendation (no Gemini quota spent here — runs first) | Pre-flight on every submission |
-| **Auto-Router** | Classifies category → BBMP / BWSSB / BESCOM department + ward + SLA + Gemini-generated dispatch note | Immediately after intake |
-| **Resolver Copilot** | Reads the evidence packet → routing note, escalation flag, SLA risk, citizen update draft | Admin reviews a case |
-| **Closure Verifier** | Before + after photo comparison → `Verified Resolved / Partially Resolved / Unresolved` with confidence score | Citizen uploads closure proof |
-| **Impact Analyst + Forecast** | Aggregates all report data → ward health summary and on-demand hotspot forecast with seasonal risk flags | Dashboard load + on-demand |
-
-This is not six isolated prompts. Each agent's output feeds the next stage — the evidence packet drives routing; routing shapes the copilot note; the copilot note sets the SLA against which closure is verified.
+- **6 Gemini-powered product flows** across intake, copilot, closure audit, translation, insights, and forecasting
+- **7-language UI** for Indian users, plus live AI-content translation
+- **Duplicate detection before filing** to reduce civic spam and cluster evidence
+- **Before/after closure verification** instead of trusting a manual "fixed" label
+- **Voice input** for faster reporting in supported browsers
+- **Predictive ward forecast** for hotspot and seasonal-risk detection
 
 ---
 
-## What Makes It Different
+## Why This Stands Out
 
-**vs. FixMyStreet / SeeClickFix:** They email councils and wait. NammaFix generates a structured evidence packet and a routing decision in seconds, with AI-verified closure.
-
-**vs. Swachhata App (India's dominant platform):** Swachhata relies on manual classification by human inspectors. NammaFix uses multimodal AI to classify, detect risk proximity, and route autonomously — removing the administrative bottleneck.
-
-**vs. generic civic apps:** NammaFix treats a civic issue as a *stateful workflow*, not a database row. It has an active duplicate detection gate, a community verification loop, AI-audited closure, and a Civic Karma system that rewards verified impact — not complaint volume.
-
----
-
-## Key Features
-
-### AI Evidence Packet
-Gemini reads the photo + description and issues a structured municipal docket: category, severity score, AI confidence, public risk bound, observed evidence, missing details, and recommended next action. This is the centrepiece — a resolver-ready docket generated in seconds, not a free-text complaint.
-
-### Automatic Municipal Routing + Civic Dispatch Ticket
-Every report is auto-routed to the correct BBMP/BWSSB/BESCOM department + ward + SLA. The Dispatch Ticket surfaces immediately in the case view with a Gemini-generated dispatch note — ready for the resolver the moment the report lands.
-
-### Duplicate Cluster Merging
-A cheap pre-flight duplicate check (no Gemini call) runs before every submission. If a matching nearby report exists, citizens can add their evidence to the cluster instead of filing a new report — boosting its verification score rather than adding noise.
-
-### Community Verification Loop
-Neighbours submit witness slips: "I saw this too / still active / looks fixed / needs recheck." At 60% verification score the status auto-advances. Closure is verified by Gemini comparing before/after photos — not self-reported by the fixer.
-
-### Civic Karma Passbook
-Karma is earned for reports filed, verifications given, and closures confirmed — not raw complaint volume. Folk-stamp badge seals are earned for contributions (First Fix Reporter, Evidence Builder, Ward Champion). A ward rank tracks a citizen's standing among neighbours.
-
-### Predictive Ward Forecast
-On-demand Gemini forecast identifies likely hotspot areas and seasonal risk patterns from the existing cluster, so authorities can act preventively — flagging drain risk before the monsoon, not after.
-
-### 7-Language UI + Voice Input
-Every label, error message, and loading step across the full UI is available in English, Hindi, Kannada, Tamil, Telugu, Bengali, and Marathi (230 translation keys, pre-generated by Gemini at zero runtime cost). AI-generated packet content can be live-translated on demand. Voice input works on description, landmark, and verification fields — supporting on-the-go reporting in Indian languages.
+- **It solves for resolution, not just reporting.** NammaFix covers the full loop from citizen evidence to verified closure.
+- **It shows real agentic depth.** Gemini is used across multiple stages of the product, not just as a chatbot add-on.
+- **It is built for Indian civic realities.** Multilingual UI, voice input, ward-aware routing, and hyperlocal issue types make the product feel locally grounded.
+- **It rewards signal over noise.** Duplicate detection, community verification, and Civic Karma push users toward useful civic action.
 
 ---
 
-## Google Technologies
+## Why This Matters
 
-| Technology | How It's Used |
+Most civic apps digitize the complaint. They do not improve the resolution loop.
+
+In real neighborhoods, the same issue gets posted in WhatsApp groups, tweeted, and reported repeatedly with no shared evidence, no routing clarity, and no trustworthy closure proof. Citizens lose trust, authorities get noisy inputs, and urgent issues get buried.
+
+NammaFix AI is built to solve that gap:
+
+- Turn unstructured reports into structured, resolver-ready evidence
+- Reduce duplicate noise before it reaches the system
+- Add community verification instead of single-user claims
+- Make closure provable with before/after AI review
+- Reward useful civic participation, not complaint spam
+
+---
+
+## The Magic Moment
+
+**Photo -> AI Evidence Packet -> Duplicate Check -> Community Verification -> Civic Dispatch Ticket -> Closure Proof -> Civic Karma**
+
+The core product experience is simple:
+
+1. A citizen uploads an image and a short description.
+2. Gemini analyzes the issue and generates a structured packet with category, severity, confidence, risk, evidence observed, and recommended next action.
+3. NammaFix checks whether the issue already exists nearby.
+4. The issue gets routed into a ward-aware civic dispatch flow.
+5. Neighbors can verify the issue and strengthen its priority.
+6. A closure photo is audited against the original before the issue is truly marked resolved.
+
+This turns a civic issue from a dead-end complaint into a living, trackable workflow.
+
+---
+
+## What We Built
+
+### 1. AI Evidence Packet
+Gemini 2.5 Flash converts a messy citizen submission into a structured municipal-quality docket:
+
+- issue title
+- category and sub-category
+- severity and severity score
+- AI confidence
+- public risk summary
+- evidence observed from the image
+- suggested resolver
+- recommended next action
+
+### 2. Duplicate Detection Before Filing
+Before creating a new report, NammaFix runs a low-cost rule-based duplicate gate using:
+
+- category match
+- geo proximity
+- keyword overlap
+
+If a similar issue already exists nearby, the citizen can merge into that case instead of creating more noise.
+
+### 3. Auto-Routed Civic Dispatch Ticket
+Every report gets a **routing ticket** with:
+
+- department
+- division
+- ward
+- channel
+- SLA
+- dispatch note
+
+This is currently powered by a mock Bengaluru resolver directory in code, which keeps the demo reliable while still showing the full resolver workflow.
+
+### 4. Community Verification Loop
+Neighbors can confirm, flag, or add photo-based evidence. Verification raises the confidence and priority of real issues and helps move them toward action.
+
+### 5. Resolver Copilot
+Admins can run a Gemini copilot that produces:
+
+- recommended action
+- suggested department
+- escalation signal
+- citizen-facing update
+- SLA risk
+
+### 6. Closure Verification
+NammaFix does not trust a manual "fixed" label. Gemini compares the **before** and **after** images and returns:
+
+- `Verified Resolved`
+- `Partially Resolved`
+- `Unresolved`
+- `Unclear`
+
+### 7. Civic Karma Passbook
+Users earn karma for:
+
+- filing quality reports
+- adding meaningful verification
+- confirming real closures
+
+This encourages civic contribution, not spammy reporting volume.
+
+### 8. Impact Dashboard + Forecast
+The dashboard shows open, verified, high-risk, and resolved issues, then uses Gemini to generate:
+
+- ward-level insight summaries
+- hotspot forecasts
+- seasonal risk signals
+- recommended community missions
+
+### 9. Built for Indian Streets
+NammaFix supports:
+
+- 7-language UI
+- live AI-content translation
+- voice input for report fields
+- mobile-first reporting flow
+- an Indian folk-tech visual identity instead of generic SaaS styling
+
+---
+
+## Screenshots
+
+Add these 3 screenshots before final submission so judges can scan the product in seconds:
+
+1. **Citizen reporting flow**  
+   Upload image -> AI Evidence Packet -> duplicate warning
+2. **Active case view**  
+   Routing ticket, verification status, and closure audit result
+3. **Impact + Karma dashboard**  
+   Ward insights, hotspot forecast, and Civic Karma profile
+
+Recommended paths once exported:
+
+- `docs/screenshots/report-flow.png`
+- `docs/screenshots/active-case.png`
+- `docs/screenshots/impact-dashboard.png`
+
+---
+
+## Agentic Depth
+
+This project is not a single prompt wrapped in a UI. It uses multiple AI-backed workflow steps across the issue lifecycle.
+
+### Gemini-backed flows in the shipped app
+
+1. **Issue intake analysis**  
+   Image + text -> structured AI Evidence Packet
+2. **Resolver Copilot**  
+   Case context -> routing note, action, escalation, citizen update
+3. **Closure audit**  
+   Before + after images -> closure verdict
+4. **Live translation**  
+   AI-generated packet content -> selected language
+5. **Impact summary**  
+   Active reports -> ward-level operational insight
+6. **Predictive forecast**  
+   Report patterns -> hotspot and seasonal-risk forecast
+
+### Non-AI workflow layers that make the system practical
+
+- duplicate gate before filing
+- ward lookup and dispatch ticket generation
+- verification scoring
+- status timeline
+- notification loop
+- karma and badges
+
+That mix is intentional: AI where reasoning helps, deterministic logic where trust and cost control matter.
+
+---
+
+## Why NammaFix Stands Out
+
+### Problem Solving & Impact
+NammaFix improves the full civic lifecycle: report, verify, route, track, and close.
+
+### Agentic Depth
+The product uses Gemini across intake, admin assistance, closure audit, translation, analytics, and forecasting rather than a single chatbot surface.
+
+### Innovation & Creativity
+The combination of **AI Evidence Packets**, **community verification**, **closure proof**, and **Civic Karma** creates a stronger accountability loop than a standard issue-reporting app.
+
+### Usage of Google Technologies
+Google AI Studio and Gemini are central to both development and the core product workflow, not just added as a side feature.
+
+### Product Experience & Design
+The UI is multilingual, mobile-friendly, and visually tailored for Indian civic use cases rather than generic enterprise dashboards.
+
+---
+
+## Google Technologies Used
+
+| Technology | Usage |
 |---|---|
-| **Gemini 2.5 Flash** | Six distinct agent calls: multimodal intake, auto-routing dispatch note, resolver copilot, before/after closure verification, impact summary, ward forecast, live content translation |
-| **Google AI Studio** | Development environment and deployment platform (deployed to Cloud Run, asia-southeast1) |
-| **Web Speech API** | Voice-to-text on report and verification fields in 7 Indian language locales (Chrome uses Google's own recognition engine under the hood) |
-
-Gemini 2.5 Flash was chosen for its multimodal reasoning at speed — the "magic moment" of the demo needs to resolve in under 10 seconds — and for its structured JSON output that drives the evidence packet format cleanly.
-
----
-
-## Design: Bharat Civic Folk-Tech
-
-NammaFix looks like a civic tool built *for* Indian streets, not a municipal form ported to a browser.
-
-The design system — **Bharat Civic Folk-Tech** — uses a turmeric-cream + civic-indigo base with saffron/marigold/peacock/lotus/leaf accents, handcrafted folk-doodle SVG illustrations (ward pins, autos, potholes, leaking pipes, evidence packet dockets), and rubber-stamp status labels. Display fonts (Anek Latin, Honk) appear only at brand moments; data is rendered in clean body typography (Mukta).
-
-The landing page and the dashboard share the same palette through a single Tailwind v4 `@theme` remap — one change retones the entire app.
+| **Gemini 2.5 Flash** | Multimodal issue analysis, resolver copilot, closure verification, translation, impact summary, predictive forecast |
+| **Google AI Studio** | Core AI development workflow and deployment path |
+| **Cloud Run** | Hosted deployed application |
+| **Web Speech API** | Voice input in supported browsers for multilingual reporting |
 
 ---
 
-## Stack
+## Architecture
 
+```text
+Citizen Photo + Description
+  -> Gemini Intake Analysis
+  -> AI Evidence Packet
+  -> Duplicate Gate
+  -> Routing Ticket
+  -> Community Verification
+  -> Resolver Copilot
+  -> Closure Audit
+  -> Impact Dashboard + Forecast
 ```
-Frontend    React 19 + Vite 6 + Tailwind CSS v4 (@theme tokens, no config file)
-Backend     Express + Vite middleware in one process (server.ts)
-AI          Gemini 2.5 Flash via @google/genai — multimodal structured JSON
-Map         Leaflet + OpenStreetMap + leaflet.heat + leaflet.markercluster (no API key)
-i18n        Custom lightweight provider — 230 keys × 7 languages (static, Gemini-generated)
-Voice       Browser-native Web Speech API (zero quota cost, language-aware)
-Deployment  Google AI Studio → Cloud Run (asia-southeast1)
-Data        In-memory, seeded on boot — demo-stable, no database setup required
-```
+
+### Stack
+
+- **Frontend:** React 19, Vite 6, Tailwind CSS v4
+- **Backend:** Express + TypeScript
+- **AI:** `@google/genai` with Gemini 2.5 Flash
+- **Maps:** Leaflet + OpenStreetMap
+- **Localization:** custom 7-language i18n layer
+- **Data:** in-memory seeded demo store
+
+---
+
+## Demo Walkthrough
+
+For a 3-4 minute hackathon demo:
+
+1. Start on the landing page and switch the UI language.
+2. Report a civic issue with an image.
+3. Show the generated AI Evidence Packet.
+4. Demonstrate duplicate detection by trying a nearby similar report.
+5. Add a community verification.
+6. Open the resolver copilot output.
+7. Upload closure proof and show the before/after Gemini audit.
+8. Open the Civic Karma profile and impact dashboard.
+9. Run the hotspot forecast.
 
 ---
 
@@ -122,47 +274,57 @@ Data        In-memory, seeded on boot — demo-stable, no database setup require
 git clone https://github.com/pbhatt0022/nammafix
 cd nammafix
 npm install
-
-# Create .env with your Gemini key from Google AI Studio:
-# GEMINI_API_KEY="AIza..."
-
-npm run dev   # → http://localhost:3000
+npm run dev
 ```
 
-Without a `GEMINI_API_KEY`, the server runs in **Simulated AI Mode** — all Gemini responses are deterministic mocks, so the full pipeline and UI is explorable with no API key.
+Create a `.env` file with:
 
 ```bash
-npm run build   # vite build + esbuild bundles server.cjs → dist/
-npm run start   # production bundle
+GEMINI_API_KEY="YOUR_KEY_HERE"
 ```
 
----
+The app runs at `http://localhost:3000`.
 
-## Demo Flow (4 minutes)
-
-1. **Landing** — Folk-tech landing page. Switch language selector to Hindi or Kannada to see full i18n in action. Click "Report a Local Issue."
-2. **Report** — Upload any civic photo. Watch the 6-step Gemini intake run in real time.
-3. **Evidence Packet** — Read the structured docket: category, severity, public risk, Dispatch Ticket with department + SLA.
-4. **Duplicate gate** — Submit a second nearby report. The system offers to merge evidence into the existing cluster.
-5. **Verification** — Add a neighbour verification by voice. Watch the score advance past the routing threshold.
-6. **Resolver Copilot** — Run the copilot for a Gemini routing note and SLA risk flag.
-7. **Closure** — Upload a "fixed" photo. Watch Gemini compare before/after and issue its verdict.
-8. **Civic Karma** — Open the Passbook. See karma, earned badge seals, and ward rank.
-9. **Map** — Switch to heatmap mode. See the severity-weighted density layer across the ward.
-10. **Forecast** — Hit "Forecast hotspots" on the Impact screen for Gemini's preventive hotspot prediction.
+If no real Gemini key is present, NammaFix falls back to **Simulated AI Mode** so the full product flow still works for local exploration.
 
 ---
 
-## Honest Disclosures
+## Honest Boundaries
 
-- **Routing is a mock** — The Civic Dispatch Ticket is generated from a hardcoded resolver directory (BBMP/BWSSB/BESCOM ward bounding boxes), not a live municipal API. The dispatch note and SLA are real Gemini output; the delivery channel is simulated. This is labelled clearly in the UI.
-- **In-memory data** — Reports reset on server restart (by design for demo stability; production path is a persistent store).
-- **Gemini free tier** — The API key runs on the free plan (20 calls/day). Enable pay-as-you-go before heavy judging use.
-- **Voice input** — Chrome/Edge best; partial Safari; absent in Firefox (button hides itself when unsupported).
+- **Routing is mock-backed today.** The app generates resolver-ready civic dispatch tickets, but does not yet submit into live BBMP/BWSSB/BESCOM systems.
+- **Data is in-memory.** Reports reset on restart to keep the demo stable and setup-free.
+- **Voice input depends on browser support.** Best on Chrome/Edge.
+- **The live product is Bengaluru-shaped today.** The workflow is extensible, but current routing logic is optimized for the hackathon demo.
+
+These are deliberate MVP boundaries, not hidden limitations.
 
 ---
 
-> Internal project docs (agent onboarding, architecture decisions, vision): [`docs/`](docs/README.md)
+## Future Scope
 
-*Built for Vibe2Ship 2026 · Problem Statement: Community Hero – Hyperlocal Problem Solver*  
-*Stack: React 19 + Express + Gemini 2.5 Flash · Deployed via Google AI Studio / Cloud Run*
+- **Real municipal system integration**  
+  Connect routing tickets to live BBMP, BWSSB, BESCOM, or grievance-portal workflows and track official ticket IDs back into NammaFix.
+- **Persistent city-scale data layer**  
+  Move from in-memory demo data to durable storage so reports, karma, verifications, and closure history survive restarts and scale across wards.
+- **Passive civic signals from public forums**  
+  Not everyone thinks to open an app. Many residents first vent on city Reddit pages or public community forums. NammaFix can ingest those public signals, extract likely issue summaries such as "We heard about a waterlogging issue near X," and push them as confirmation prompts to nearby users: **"We heard about this issue here. Can you confirm?"**
+- **Expanded multilingual access**  
+  Grow from the current 7-language UI toward broader Indian language coverage, including stronger voice-first flows for low-literacy or on-the-move users.
+- **City expansion beyond Bengaluru**  
+  Generalize the routing layer from Bengaluru wards to other Indian cities using jurisdiction-aware resolver directories, geocoding, and local civic department mappings.
+- **Preventive maintenance recommendations**  
+  Use repeated issue clusters, seasonal patterns, and closure timelines to suggest pre-emptive ward actions such as monsoon drain clearing, school-zone pothole repair, or streetlight audits.
+- **Public accountability and ward insights**  
+  Add city and ward transparency views showing recurring issue categories, average time-to-resolution, verification participation, and closure quality trends.
+- **Trust and evidence hardening**  
+  Strengthen report authenticity with metadata checks, image provenance signals, optional privacy protections like face/plate blurring, and stronger audit trails for closure proof.
+- **Community missions and neighborhood campaigns**  
+  Extend Civic Karma into structured hyperlocal missions such as "Drain Watch Week" or "School Safety Route Audit" so residents can collaborate around preventive civic action, not only report isolated complaints.
+
+---
+
+## Submission Summary
+
+**NammaFix AI** is a civic-resolution workflow, not just a reporting form. It combines multimodal Gemini analysis, structured evidence, community validation, resolver assistance, closure auditing, multilingual UX, and civic incentives into one end-to-end product designed for hyperlocal impact.
+
+If existing civic apps help people complain, NammaFix helps communities actually get things fixed.

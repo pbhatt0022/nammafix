@@ -557,6 +557,17 @@ export default function ActiveCaseView({
 
       {/* Primary Detail Container */}
       <div className="p-6 flex-1 overflow-y-auto max-h-[580px] space-y-6">
+        {/* Low-confidence warning — shown when AI is uncertain, prompts more evidence */}
+        {report.aiConfidence < 0.65 && report.status !== "Resolved" && (
+          <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+            <AlertCircle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-[11px] font-bold text-amber-800 leading-tight">Needs more evidence — AI confidence is low ({Math.round(report.aiConfidence * 100)}%)</p>
+              <p className="text-[10px] text-amber-700 mt-0.5">Add a clearer photo or a neighbour verification to strengthen routing priority.</p>
+            </div>
+          </div>
+        )}
+
         {/* Core Title Section */}
         <div className="flex justify-between items-start gap-4 pb-4 border-b border-slate-100">
           <div>
@@ -571,6 +582,11 @@ export default function ActiveCaseView({
                 report.status === "Resolved" ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-blue-50 text-blue-700 border-blue-100"
               }`}>
                 {t("enum.status." + report.status)}
+              </span>
+              <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight border ${
+                report.clusterId ? "bg-violet-50 text-violet-700 border-violet-100" : "bg-slate-50 text-slate-500 border-slate-100"
+              }`}>
+                {report.clusterId ? "Cluster Lead" : "Citizen Report"}
               </span>
             </div>
             

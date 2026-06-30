@@ -12,7 +12,7 @@ import CommunityMapView from "./components/CommunityMapView";
 import ImpactStats from "./components/ImpactStats";
 import CivicProfileView from "./components/CivicProfileView";
 import { Report, User, StatusEvent, Verification } from "./types";
-import { ClipboardList, Filter, Navigation, PlusCircle, Clock } from "lucide-react";
+import { ClipboardList, Filter, Navigation, PlusCircle, Clock, Radio } from "lucide-react";
 import { useT } from "./i18n";
 
 interface AppProps {
@@ -333,6 +333,29 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
                   </div>
                 </div>
               )}
+
+              {/* Community signal card — mocked forum/Reddit signal (v2 teaser) */}
+              <div className="bg-white rounded-2xl border border-peacock/30 p-4 shrink-0">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[9px] font-extrabold text-peacock uppercase tracking-widest flex items-center gap-1.5">
+                    <Radio className="w-3 h-3 animate-pulse" />
+                    Community Signal
+                  </span>
+                  <span className="text-[8px] font-mono text-slate-400 bg-slate-50 border border-slate-100 px-1.5 py-0.5 rounded uppercase">Simulated</span>
+                </div>
+                <p className="text-[11px] font-semibold text-slate-700 leading-snug">
+                  "Waterlogging near Indiranagar 100ft Road is getting worse after last night's rain — auto drivers refusing the stretch."
+                </p>
+                <div className="flex items-center justify-between mt-2.5">
+                  <span className="text-[9px] text-slate-400 font-mono">r/bangalore · 2h ago · 47 upvotes</span>
+                  <button
+                    onClick={() => setIsReporting(true)}
+                    className="text-[9px] font-black uppercase tracking-wider text-peacock hover:underline"
+                  >
+                    File report →
+                  </button>
+                </div>
+              </div>
 
               {/* Impact stats and bento metrics */}
               <div className="flex-1 overflow-y-auto pr-1">
