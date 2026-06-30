@@ -436,6 +436,61 @@ app.post("/api/reports", async (req, res) => {
   }
 });
 
+// POST reports/check-duplicates - Cheap rule-based pre-flight (no Gemini). Lets the
+// citizen merge into an existing cluster before a duplicate is ever filed.
+app.post("/api/reports/check-duplicates", (req, res) => {
+  const { category, title, description, latitude, longitude } = req.body;
+  const cands = checkDuplicates(
+    { category, title: title || "", description: description || "", latitude, longitude },
+    database.reports
+  );
+  res.json({
+    duplicates: cands.map((d) => {
+      const e = database.reports.find((r) => r.id === d.id);
+      return { id: d.id, title: e?.title, category: e?.category, status: e?.status, landmark: e?.landmark, similarity: d.similarity };
+    })
+  });
+});
+
+// POST reports/:id/merge - Add the citizen's photo evidence to an existing report
+// (cluster merge) instead of creating a duplicate. Boosts verification + awards karma.
+app.post("/api/reports/:id/merge", (req, res) => {
+  const { id } = req.params;
+  const { imageUrl, comment, userId } = req.body;
+  const report = database.reports.find((r) => r.id === id);
+  if (!report) return res.status(404).json({ error: "Report not found" });
+
+  const uid = userId || "u_002";
+  const user = database.users.find((u) => u.id === uid);
+
+  database.verifications.push({
+    id: `V-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    reportId: id,
+    userId: uid,
+    userName: user?.name || "Citizen",
+    type: "photo",
+    comment: comment || "Added fresh photo evidence to this existing report.",
+    imageUrl,
+    createdAt: new Date().toISOString()
+  });
+
+  report.verificationScore = Math.min(100, report.verificationScore + 20);
+  report.updatedAt = new Date().toISOString();
+  database.statusEvents.push({
+    id: `SE-${Math.floor(1000 + Math.random() * 9000)}`,
+    reportId: id,
+    fromStatus: report.status,
+    toStatus: report.status,
+    changedBy: "system",
+    note: "Fresh photo evidence merged from a nearby duplicate report attempt — verification strengthened.",
+    createdAt: new Date().toISOString()
+  });
+
+  if (user) { user.verificationsGiven += 1; user.karma += 20; }
+
+  res.json({ report });
+});
+
 // POST reports/:id/verify - Submit community validation & increment karma
 app.post("/api/reports/:id/verify", (req, res) => {
   const { id } = req.params;

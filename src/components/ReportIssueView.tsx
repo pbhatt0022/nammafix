@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from "react";
-import { UploadCloud, Cpu, AlertCircle, Flame } from "lucide-react";
+import { UploadCloud, Cpu, AlertCircle, Flame, Copy } from "lucide-react";
 import { Report } from "../types";
 import { useT } from "../i18n";
 import MicButton from "../i18n/MicButton";
@@ -60,6 +60,10 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
   const [loadingStep, setLoadingStep] = useState("");
   const [error, setError] = useState("");
 
+  // Duplicate pre-flight gate: candidates found before filing, and merge progress.
+  const [dupCandidates, setDupCandidates] = useState<any[] | null>(null);
+  const [merging, setMerging] = useState(false);
+
   // Select a pre-packaged Bangalore scenario
   const handleSelectPreset = (preset: typeof BANGALORE_PRESETS[0]) => {
     setTitle(preset.title);
@@ -78,7 +82,7 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
     if (!file) return;
 
     if (file.size > 8 * 1024 * 1024) {
-      setError("File exceeds 8MB. Please select a smaller civic photo.");
+      setError(t("err.fileTooBig"));
       return;
     }
 
@@ -88,34 +92,72 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
       setImageUrl(reader.result as string);
     };
     reader.onerror = () => {
-      setError("Failed to convert image to base64.");
+      setError(t("err.fileFailed"));
     };
     reader.readAsDataURL(file);
   };
 
-  // Trigger Gemini API Analysis Flow
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Cluster merge: add this photo as evidence to an existing nearby report.
+  const handleMerge = async (reportId: string) => {
+    setMerging(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/reports/${reportId}/merge`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl, comment: description, userId: "u_002" })
+      });
+      if (!res.ok) throw new Error("merge failed");
+      const data = await res.json();
+      incrementApiCount();
+      onSuccess(data.report); // open the existing report we strengthened
+    } catch {
+      setError(t("err.mergeFailed"));
+    } finally {
+      setMerging(false);
+    }
+  };
+
+  // Trigger Gemini API Analysis Flow. `forceNew` skips the duplicate pre-flight.
+  const handleSubmit = async (e: React.FormEvent | null, forceNew = false) => {
+    if (e) e.preventDefault();
     if (!imageUrl) {
-      setError("An evidence photo is required for Gemini AI classification.");
+      setError(t("err.photoRequired"));
       return;
     }
     if (!description.trim()) {
-      setError("Please supply a short description for the routing context.");
+      setError(t("err.descRequired"));
       return;
     }
 
+    // Pre-flight: rule-based duplicate check (no Gemini cost) before filing.
+    if (!forceNew) {
+      try {
+        const dupRes = await fetch("/api/reports/check-duplicates", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ category, title, description, latitude, longitude })
+        });
+        if (dupRes.ok) {
+          const { duplicates } = await dupRes.json();
+          if (duplicates && duplicates.length > 0) {
+            setDupCandidates(duplicates);
+            return; // let the citizen choose: merge or file new
+          }
+        }
+      } catch {
+        // If the check fails, fall through and file as new — never block reporting.
+      }
+    }
+
+    setDupCandidates(null);
     setLoading(true);
     setError("");
     incrementApiCount();
 
     const steps = [
-      "Compressing civic photo evidence...",
-      "Connecting securely to Gemini 2.5 Flash...",
-      "Multimodal analysis of visual structures...",
-      "Assessing localized risk and public hazard indices...",
-      "Formulating structured JSON Evidence Packet...",
-      "Seeding simulation database records..."
+      t("report.step.1"), t("report.step.2"), t("report.step.3"),
+      t("report.step.4"), t("report.step.5"), t("report.step.6")
     ];
 
     let currentStep = 0;
@@ -152,16 +194,10 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
 
       const responseData = await response.json();
       const createdReport = responseData.report || responseData;
-      const duplicates = responseData.duplicates || [];
-
-      if (duplicates.length > 0) {
-        setError(`⚠️ Found ${duplicates.length} similar issue(s) nearby. You can verify those reports or proceed with this new one.`);
-      }
-
-      onSuccess(createdReport);
-    } catch (err: any) {
+      onSuccess(createdReport); // duplicates are handled by the pre-flight gate
+    } catch {
       clearInterval(stepInterval);
-      setError(err.message || "Network timeout connecting to Gemini proxy.");
+      setError(t("err.submitFailed"));
       setLoading(false);
     }
   };
@@ -208,8 +244,58 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
             {t("report.loading.hint")}
           </div>
         </div>
+      ) : dupCandidates ? (
+        /* Duplicate pre-flight gate — merge into an existing report or file new */
+        <div className="space-y-4">
+          <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+            <Copy className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <h3 className="text-sm font-black text-amber-900">{t("dup.title")}</h3>
+              <p className="text-xs text-amber-800/80 leading-relaxed mt-0.5">{t("dup.subtitle")}</p>
+            </div>
+          </div>
+
+          <div className="space-y-2.5">
+            {dupCandidates.map((d) => (
+              <div key={d.id} className="p-3 border border-slate-200 rounded-xl flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="font-mono text-[9px] font-extrabold text-slate-400">#{d.id}</span>
+                    <span className="text-[8px] font-bold uppercase px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700">{t("enum.cat." + d.category)}</span>
+                    <span className="text-[9px] font-bold text-emerald-600">{Math.round((d.similarity || 0) * 100)}% {t("dup.similar")}</span>
+                  </div>
+                  <p className="text-xs font-bold text-slate-800 truncate">{d.title}</p>
+                  <p className="text-[10px] text-slate-400 font-mono truncate">{d.landmark}</p>
+                </div>
+                <button
+                  onClick={() => handleMerge(d.id)}
+                  disabled={merging}
+                  className="shrink-0 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-wider rounded-lg disabled:opacity-60"
+                >
+                  {t("dup.addEvidence")}
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="pt-3 flex gap-3 border-t border-slate-100">
+            <button
+              onClick={() => handleSubmit(null, true)}
+              disabled={merging}
+              className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-black uppercase tracking-wider disabled:opacity-60"
+            >
+              {t("dup.fileNew")}
+            </button>
+            <button
+              onClick={() => { setDupCandidates(null); }}
+              className="py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold uppercase"
+            >
+              {t("common.cancel")}
+            </button>
+          </div>
+        </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={(e) => handleSubmit(e)} className="space-y-5">
           {/* Preset Demo Panel */}
           <div>
             <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-1">

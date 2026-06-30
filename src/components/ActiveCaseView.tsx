@@ -698,7 +698,7 @@ export default function ActiveCaseView({
                           onClick={() => setClosureImageUrl(preset.url)}
                           className="bg-white border border-slate-200 hover:border-indigo-400 rounded p-1 text-[9px] font-bold text-slate-500 hover:text-slate-800 truncate"
                         >
-                          Scenario {pIdx + 1}
+                          {t("case.scenario")} {pIdx + 1}
                         </button>
                       ))}
                     </div>

@@ -25,7 +25,7 @@ export default function Header({ currentUser, activeTab, setActiveTab, onHome, n
   return (
     <header className="h-16 flex items-center justify-between gap-2 px-4 sm:px-6 bg-cream border-b-2 border-ink/10 shrink-0">
       {/* Branding Logo — click to return to the landing page */}
-      <button onClick={onHome} title="Back to home" className="flex items-center gap-3 text-left shrink-0">
+      <button onClick={onHome} title={t("common.home")} className="flex items-center gap-3 text-left shrink-0">
 
         <div className="w-9 h-9 bg-indigoc rounded-lg flex items-center justify-center text-marigold font-display font-extrabold shadow-sm">
           NF
@@ -108,7 +108,7 @@ export default function Header({ currentUser, activeTab, setActiveTab, onHome, n
           <div className="flex flex-col text-left">
             <span className="text-xs font-bold text-ink leading-none">{currentUser.name}</span>
             <span className="text-[9px] font-mono text-ink/45 mt-1 uppercase tracking-tight">
-              {currentUser.badges[0] || "Active Citizen"}
+              {currentUser.badges[0] || t("common.activeCitizen")}
             </span>
           </div>
         </button>
