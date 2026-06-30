@@ -1,0 +1,1 @@
+NammaFix AI turns a phone photo of Bengaluru's worst civic hazards into a government-grade evidence packet — severity score, BBMP routing, duplicate detection — in seconds. Built in 48h at Vibe2Ship 2026. Powered by Gemini.

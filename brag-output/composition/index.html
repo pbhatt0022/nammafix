@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NammaFix AI — Brag</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anek+Latin:wght@400;700;800&family=Mukta:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+  background: #FFF8E7;
+  font-family: 'Mukta', sans-serif;
+}
+
+#stage {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Scene 1: Hook ── */
+#s1 { background: #243B73; flex-direction: column; gap: 28px; }
+
+.hook-line {
+  font-family: 'Anek Latin', sans-serif;
+  font-weight: 800;
+  font-size: 62px;
+  color: #fff;
+  text-align: center;
+  line-height: 1.1;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+#hook-2 { font-size: 50px; color: #FACC15; }
+
+/* ── Scene 2: Reveal ── */
+#s2 { background: #FFF8E7; flex-direction: column; gap: 24px; align-items: center; }
+
+.logo-badge {
+  width: 84px; height: 84px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #2e4fa3 0%, #162347 100%);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(36,59,115,0.35);
+  transform: scale(0.85);
+  opacity: 0;
+}
+
+.logo-badge .dot {
+  position: absolute; bottom: -4px; right: -4px;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: #F97316;
+  border: 3px solid #FFF8E7;
+}
+
+#reveal-words {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  opacity: 0; transform: translateY(12px);
+}
+
+.wm-name-row {
+  display: flex; align-items: center; gap: 10px;
+}
+
+.wm-name {
+  font-family: 'Anek Latin', sans-serif;
+  font-weight: 800; font-size: 56px; color: #243B73;
+}
+
+.wm-pill {
+  background: #F97316; color: white;
+  font-family: 'Anek Latin', sans-serif;
+  font-weight: 800; font-size: 14px;
+  padding: 5px 12px; border-radius: 100px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-top: 6px;
+}
+
+.wm-tag {
+  font-family: 'Mukta', sans-serif;
+  font-size: 13px; font-weight: 600;
+  color: rgba(36,59,115,0.42);
+  letter-spacing: 0.22em; text-transform: uppercase;
+}
+
+/* ── Scene 3: Evidence ── */
+#s3 { background: #FFF8E7; align-items: center; justify-content: center; gap: 56px; }
+
+.ss-frame {
+  width: 500px; height: 340px;
+  border-radius: 14px; overflow: hidden;
+  box-shadow: 0 16px 56px rgba(36,59,115,0.14);
+  border: 2px solid rgba(36,59,115,0.08);
+  flex-shrink: 0;
+}
+
+.ss-frame img { width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+
+.ev-card {
+  background: white;
+  border-radius: 16px;
+  border: 2px solid rgba(36,59,115,0.1);
+  padding: 28px 32px;
+  width: 340px;
+  box-shadow: 0 8px 32px rgba(36,59,115,0.08);
+}
+
+.ev-header {
+  font-family: 'Anek Latin', sans-serif;
+  font-weight: 800; font-size: 12px;
+  color: #F97316; letter-spacing: 0.15em;
+  text-transform: uppercase; margin-bottom: 18px;
+}
+
+.ev-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid rgba(36,59,115,0.06);
+  opacity: 0; transform: translateX(-16px);
+}
+.ev-item:last-child { border-bottom: none; }
+
+.ev-check {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #2E7D32;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 2px;
+}
+
+.ev-lbl {
+  font-family: 'Mukta', sans-serif; font-size: 10px;
+  font-weight: 600; color: rgba(58,31,27,0.48);
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+.ev-val {
+  font-family: 'Anek Latin', sans-serif;
+  font-weight: 700; font-size: 16px; color: #3A1F1B;
+  margin-top: 1px;
+}
+
+.ev-foot {
+  position: absolute; bottom: 56px; left: 0; right: 0;
+  text-align: center;
+  font-family: 'Anek Latin', sans-serif;
+  font-weight: 800; font-size: 38px; color: #243B73;
+  opacity: 0; transform: translateY(8px);
+}
+
+/* ── Scene 4: Priority ── */
+#s4 { background: #243B73; }
+
+.case-card {
+  background: rgba(255,255,255,0.07);
+  border: 2px solid rgba(255,255,255,0.14);
+  border-radius: 20px;
+  padding: 40px 56px;
+  max-width: 700px;
+  text-align: center;
+}
+
+.case-meta {
+  display: flex; align-items: center; gap: 12px; justify-content: center;
+  margin-bottom: 20px;
+}
+
+.case-chip {
+  background: rgba(249,115,22,0.18);
+  border: 2px solid #F97316;
+  border-radius: 8px; padding: 4px 14px;
+  font-family: 'Mukta', sans-serif;
+  font-size: 11px; font-weight: 700;
+  color: #F97316; letter-spacing: 0.1em; text-transform: uppercase;
+}
+
+.case-chip.id {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.6);
+}
+
+.case-title {
+  font-family: 'Anek Latin', sans-serif;
+  font-weight: 800; font-size: 30px; color: white;
+  line-height: 1.25; margin-bottom: 28px;
+}
+
+.priority-pill {
+  display: inline-flex; align-items: center; gap: 14px;
+  background: #F97316; border-radius: 100px; padding: 14px 32px;
+  opacity: 0; transform: scale(0.7);
+  box-shadow: 0 8px 32px rgba(249,115,22,0.4);
+}
+
+.priority-lbl {
+  font-family: 'Mukta', sans-serif;
+  font-size: 12px; font-weight: 700;
+  color: rgba(255,255,255,0.8);
+  text-transform: uppercase; letter-spacing: 0.12em;
+}
+
+.priority-num {
+  font-family: 'Anek Latin', sans-serif;
+  font-weight: 800; font-size: 38px; color: white;
+}
+
+.routing-lbl {
+  font-family: 'Anek Latin', sans-serif;
+  font-weight: 700; font-size: 22px;
+  color: rgba(250,204,21,0.9); margin-top: 24px;
+  opacity: 0;
+}
+
+/* ── Scene 5: Karma ── */
+#s5 { background: #FFF8E7; flex-direction: column; gap: 24px; }
+
+.karma-card {
+  background: white;
+  border-radius: 16px; border: 2px solid rgba(36,59,115,0.1);
+  padding: 28px 40px;
+  display: flex; align-items: center; gap: 32px;
+  box-shadow: 0 8px 32px rgba(36,59,115,0.08);
+}
+
+.karma-av {
+  width: 64px; height: 64px; border-radius: 12px;
+  background: #243B73;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Anek Latin', sans-serif;
+  font-weight: 800; font-size: 28px; color: #FACC15;
+  flex-shrink: 0;
+}
+
+.karma-lbl { font-family: 'Mukta', sans-serif; font-size: 11px; font-weight: 600; color: rgba(58,31,27,0.45); text-transform: uppercase; letter-spacing: 0.12em; }
+.karma-name { font-family: 'Anek Latin', sans-serif; font-weight: 800; font-size: 22px; color: #3A1F1B; margin-top: 2px; }
+.karma-loc { font-family: 'Mukta', sans-serif; font-size: 13px; color: rgba(58,31,27,0.5); margin-top: 2px; }
+
+.karma-stats { display: flex; gap: 32px; margin-left: 16px; }
+.kstat { text-align: center; }
+.kstat .n { font-family: 'Anek Latin', sans-serif; font-weight: 800; font-size: 34px; display: block; }
+.kstat .n.or { color: #F97316; }
+.kstat .n.in { color: #243B73; }
+.kstat .sl { font-family: 'Mukta', sans-serif; font-size: 10px; font-weight: 600; color: rgba(58,31,27,0.45); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-top: 2px; }
+
+.chips { display: flex; gap: 12px; }
+.chip {
+  background: #FFF4C7; border: 2px solid rgba(36,59,115,0.1);
+  border-radius: 100px; padding: 9px 22px;
+  font-family: 'Mukta', sans-serif;
+  font-size: 13px; font-weight: 700; color: #243B73;
+  opacity: 0; transform: translateY(8px);
+}
+
+.badges {
+  display: flex; gap: 24px; opacity: 0;
+}
+
+.badge-txt {
+  font-family: 'Mukta', sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+
+/* ── Scene 6: Outro ── */
+#s6 { background: #FFF8E7; flex-direction: column; gap: 18px; }
+
+.outro-badge {
+  width: 96px; height: 96px; border-radius: 50%;
+  background: linear-gradient(145deg, #2e4fa3 0%, #162347 100%);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  box-shadow: 0 14px 48px rgba(36,59,115,0.32);
+  opacity: 0; transform: scale(0.82);
+}
+
+.outro-dot {
+  position: absolute; bottom: -5px; right: -5px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #F97316; border: 3.5px solid #FFF8E7;
+}
+
+.outro-name {
+  font-family: 'Anek Latin', sans-serif;
+  font-weight: 800; font-size: 58px; color: #243B73;
+  display: flex; align-items: center; gap: 12px;
+  opacity: 0; transform: translateY(10px);
+}
+
+.outro-pill {
+  background: #F97316; color: white;
+  font-family: 'Anek Latin', sans-serif;
+  font-weight: 800; font-size: 19px;
+  padding: 6px 16px; border-radius: 100px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.outro-tag {
+  font-family: 'Mukta', sans-serif;
+  font-size: 15px; font-weight: 600;
+  color: rgba(36,59,115,0.42); letter-spacing: 0.22em; text-transform: uppercase;
+  opacity: 0;
+}
+
+.outro-gem {
+  font-family: 'Mukta', sans-serif;
+  font-size: 13px; font-weight: 500;
+  color: rgba(58,31,27,0.36); letter-spacing: 0.08em;
+  opacity: 0;
+}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- S1: Hook -->
+  <div class="scene" id="s1">
+    <div style="text-align:center;">
+      <div class="hook-line" id="h1">Bengaluru has 6 lakh potholes.</div>
+      <div style="height:28px;"></div>
+      <div class="hook-line" id="h2">Now every citizen has a co-pilot.</div>
+    </div>
+  </div>
+
+  <!-- S2: Reveal -->
+  <div class="scene" id="s2">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:22px;">
+      <div class="logo-badge" id="r-badge">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#FACC15" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <div class="dot"></div>
+      </div>
+      <div id="reveal-words">
+        <div class="wm-name-row">
+          <span class="wm-name">NammaFix</span>
+          <span class="wm-pill">AI</span>
+        </div>
+        <div class="wm-tag">Civic Resolution Layer</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3: Evidence -->
+  <div class="scene" id="s3">
+    <div class="ss-frame">
+      <img src="../../docs/screenshots/report-flow.png" alt="Report flow">
+    </div>
+    <div class="ev-card">
+      <div class="ev-header">⚡ AI Evidence Packet</div>
+      <div class="ev-item" id="ev1">
+        <div class="ev-check">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <div class="ev-lbl">Severity</div>
+          <div class="ev-val">CRITICAL — Public Risk</div>
+        </div>
+      </div>
+      <div class="ev-item" id="ev2">
+        <div class="ev-check">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <div class="ev-lbl">Routing</div>
+          <div class="ev-val">BBMP Zone 4 · Roads</div>
+        </div>
+      </div>
+      <div class="ev-item" id="ev3">
+        <div class="ev-check" style="background:#243B73;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <div class="ev-lbl">Duplicate Check</div>
+          <div class="ev-val">Unique · No overlap</div>
+        </div>
+      </div>
+    </div>
+    <div class="ev-foot" id="ev-foot">Evidence Packet. In seconds.</div>
+  </div>
+
+  <!-- S4: Priority -->
+  <div class="scene" id="s4">
+    <div class="case-card">
+      <div class="case-meta">
+        <span class="case-chip">ACTIVE CASE</span>
+        <span class="case-chip id">#NF-103</span>
+      </div>
+      <div class="case-title">Damaged high-voltage cable<br>sparking on 100 Feet Road</div>
+      <div class="priority-pill" id="p-pill">
+        <div>
+          <div class="priority-lbl">Priority Score</div>
+          <div class="priority-num">10 / 10</div>
+        </div>
+      </div>
+      <div class="routing-lbl" id="r-lbl">Routed to BBMP. Automatically.</div>
+    </div>
+  </div>
+
+  <!-- S5: Karma -->
+  <div class="scene" id="s5">
+    <div class="karma-card">
+      <div class="karma-av">P</div>
+      <div>
+        <div class="karma-lbl">Civic Passbook</div>
+        <div class="karma-name">Priyanka Bhatt</div>
+        <div class="karma-loc">Indiranagar, Bengaluru</div>
+      </div>
+      <div class="karma-stats">
+        <div class="kstat"><span class="n or">420</span><span class="sl">Civic Karma</span></div>
+        <div class="kstat"><span class="n in">#2</span><span class="sl">Ward Rank</span></div>
+      </div>
+    </div>
+    <div class="chips">
+      <div class="chip" id="c1">8 Reports Filed</div>
+      <div class="chip" id="c2">15 Verifications Given</div>
+      <div class="chip" id="c3">5 Closures Confirmed</div>
+    </div>
+    <div class="badges" id="badges">
+      <span class="badge-txt" style="color:#F97316;">CIVIC HERO</span>
+      <span class="badge-txt" style="color:#243B73;">DRAINAGE GURU</span>
+      <span class="badge-txt" style="color:#00A6A6;">MISSION FINISHER</span>
+    </div>
+  </div>
+
+  <!-- S6: Outro -->
+  <div class="scene" id="s6">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:18px;">
+      <div class="outro-badge" id="ob">
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#FACC15" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <div class="outro-dot" id="odot"></div>
+      </div>
+      <div class="outro-name" id="on">
+        NammaFix
+        <span class="outro-pill">AI</span>
+      </div>
+      <div class="outro-tag" id="ot">Civic Resolution Layer</div>
+      <div class="outro-gem" id="og">Powered by Gemini · Built at Vibe2Ship 2026</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Music -->
+<audio id="mus" src="assets/music/happy-beats-business-moves-vol-12-by-ende-dot-app.mp3"></audio>
+
+<!-- SFX -->
+<audio id="a-hook"  src="assets/sfx/impact/impactSoft_medium_001.ogg"></audio>
+<audio id="a-ev1"   src="assets/sfx/impact/impactBell_heavy_000.ogg"></audio>
+<audio id="a-ev2"   src="assets/sfx/interface/drop_001.ogg"></audio>
+<audio id="a-ev3"   src="assets/sfx/interface/drop_002.ogg"></audio>
+<audio id="a-pri"   src="assets/sfx/impact/impactBell_heavy_003.ogg"></audio>
+<audio id="a-c1"    src="assets/sfx/casino/chip-lay-1.ogg"></audio>
+<audio id="a-c2"    src="assets/sfx/casino/chip-lay-1.ogg"></audio>
+<audio id="a-c3"    src="assets/sfx/casino/chip-lay-1.ogg"></audio>
+<audio id="a-logo"  src="assets/sfx/impact/impactBell_heavy_004.ogg"></audio>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+// ── helpers ──
+function sfx(id, vol) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.volume = vol ?? 0.65;
+  el.currentTime = 0;
+  el.play().catch(() => {});
+}
+
+// ── initial states (override CSS opacity:0 so GSAP controls everything) ──
+gsap.set(['#s1','#s2','#s3','#s4','#s5','#s6'], { opacity: 0 });
+gsap.set(['#h1','#h2'], { opacity: 0, y: 10 });
+gsap.set('#r-badge', { opacity: 0, scale: 0.85 });
+gsap.set('#reveal-words', { opacity: 0, y: 12 });
+gsap.set(['#ev1','#ev2','#ev3'], { opacity: 0, x: -16 });
+gsap.set('#ev-foot', { opacity: 0, y: 8 });
+gsap.set('#p-pill', { opacity: 0, scale: 0.7 });
+gsap.set('#r-lbl', { opacity: 0 });
+gsap.set(['#c1','#c2','#c3'], { opacity: 0, y: 8 });
+gsap.set('#badges', { opacity: 0 });
+gsap.set('#ob', { opacity: 0, scale: 0.82 });
+gsap.set(['#on','#ot','#og'], { opacity: 0, y: 10 });
+
+// ── music ──
+const mus = document.getElementById('mus');
+mus.volume = 0.35;
+mus.play().catch(() => {});
+
+// ── master timeline ──
+const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+// S1: Hook  0–4s
+tl.to('#s1', { opacity: 1, duration: 0.3 }, 0)
+  .to('#h1', { opacity: 1, y: 0, duration: 0.5 }, 0.4)
+  .call(() => sfx('a-hook', 0.55), null, 0.35)
+  .to('#h2', { opacity: 1, y: 0, duration: 0.55 }, 2.1)
+  .to('#s1', { opacity: 0, duration: 0.45 }, 3.65)
+
+// S2: Reveal  4–6.5s
+.to('#s2', { opacity: 1, duration: 0.4 }, 4.0)
+.to('#r-badge', { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.3)' }, 4.1)
+.to('#reveal-words', { opacity: 1, y: 0, duration: 0.45 }, 4.65)
+.to('#s2', { opacity: 0, duration: 0.5 }, 6.1)
+
+// S3: Evidence  6.5–10.5s
+.to('#s3', { opacity: 1, duration: 0.5 }, 6.5)
+// Beat-locked cues: 8.74, 9.29, 9.83
+.to('#ev1', { opacity: 1, x: 0, duration: 0.4 }, 8.6)
+.call(() => sfx('a-ev1', 0.70), null, 8.58)
+.to('#ev2', { opacity: 1, x: 0, duration: 0.4 }, 9.2)
+.call(() => sfx('a-ev2', 0.45), null, 9.18)
+.to('#ev3', { opacity: 1, x: 0, duration: 0.4 }, 9.75)
+.call(() => sfx('a-ev3', 0.45), null, 9.73)
+.to('#ev-foot', { opacity: 1, y: 0, duration: 0.5 }, 10.05)
+.to('#s3', { opacity: 0, duration: 0.5 }, 10.55)
+
+// S4: Priority  10.8–14s
+.to('#s4', { opacity: 1, duration: 0.5 }, 10.8)
+// 10/10 badge beat-locked ~13.11
+.to('#p-pill', { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.4)' }, 13.0)
+.call(() => sfx('a-pri', 0.75), null, 12.98)
+.to('#r-lbl', { opacity: 1, duration: 0.45 }, 13.55)
+.to('#s4', { opacity: 0, duration: 0.5 }, 14.05)
+
+// S5: Karma  14.1–17s
+.to('#s5', { opacity: 1, duration: 0.5 }, 14.1)
+// Beat-grid: 14.73, 15.29, 15.84
+.to('#c1', { opacity: 1, y: 0, duration: 0.3 }, 14.7)
+.call(() => sfx('a-c1', 0.55), null, 14.68)
+.to('#c2', { opacity: 1, y: 0, duration: 0.3 }, 15.25)
+.call(() => sfx('a-c2', 0.55), null, 15.23)
+.to('#c3', { opacity: 1, y: 0, duration: 0.3 }, 15.8)
+.call(() => sfx('a-c3', 0.55), null, 15.78)
+.to('#badges', { opacity: 1, duration: 0.4 }, 16.35)
+.to('#s5', { opacity: 0, duration: 0.5 }, 16.8)
+
+// S6: Outro  17–20s — logo beat-locked ~17.47
+.to('#s6', { opacity: 1, duration: 0.4 }, 17.1)
+.to('#ob', { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.2)' }, 17.35)
+.call(() => sfx('a-logo', 0.75), null, 17.33)
+.to('#on', { opacity: 1, y: 0, duration: 0.4 }, 17.9)
+.to('#ot', { opacity: 1, duration: 0.4 }, 18.4)
+.to('#og', { opacity: 1, duration: 0.4 }, 18.85)
+// Saffron dot pulse
+.to('#odot', { scale: 1.45, duration: 0.28, ease: 'power2.out',
+  boxShadow: '0 0 22px rgba(249,115,22,0.75)' }, 19.35)
+.to('#odot', { scale: 1.0, duration: 0.4, ease: 'power2.in',
+  boxShadow: '0 0 0px rgba(249,115,22,0)' }, 19.63)
+// Music fade
+.to(mus, { volume: 0, duration: 1.5, ease: 'power1.in' }, 18.3)
+
+tl.play();
+</script>
+</body>
+</html>
