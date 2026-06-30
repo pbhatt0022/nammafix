@@ -73,7 +73,7 @@ export default function ImpactStats({ apiCount }: ImpactStatsProps) {
           <Activity className="w-24 h-24 text-white" />
         </div>
 
-        <h3 className="text-[9px] font-extrabold text-indigo-300 uppercase tracking-widest mb-4 flex items-center gap-1.5">
+        <h3 className="text-xs font-semibold text-marigold/80 mb-4 flex items-center gap-1.5">
           <Target className="w-3.5 h-3.5" />
           {t("impact.metrics")}
         </h3>
@@ -117,7 +117,7 @@ export default function ImpactStats({ apiCount }: ImpactStatsProps) {
                 <p className="text-2xl font-black text-amber-400 tracking-tight">{stats.mergedCount}</p>
                 <p className="text-[9px] text-slate-400 uppercase font-black tracking-wider mt-0.5">Reports Consolidated</p>
               </div>
-              <p className="text-[9px] text-slate-500 font-mono text-right leading-snug">Duplicate evidence<br/>merged, not filed</p>
+              <p className="text-[9px] text-slate-500 text-right leading-snug">Duplicate evidence<br/>merged, not filed</p>
             </div>
           )}
         </div>
@@ -126,8 +126,8 @@ export default function ImpactStats({ apiCount }: ImpactStatsProps) {
       {/* Gemini localized insights summary card */}
       <div className="bg-indigo-900 rounded-2xl p-5 text-white border border-indigo-800 space-y-3 shrink-0">
         <div className="flex justify-between items-center">
-          <span className="text-[9px] font-extrabold text-indigo-300 uppercase tracking-widest flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-300 animate-pulse fill-indigo-300" />
+          <span className="text-xs font-semibold text-marigold/80 flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-marigold/70 animate-pulse fill-marigold/40" />
             {t("impact.summary")}
           </span>
           <span className="text-[8px] font-mono text-indigo-400 bg-indigo-950 px-1.5 py-0.5 rounded border border-indigo-950 font-bold uppercase">
@@ -135,7 +135,7 @@ export default function ImpactStats({ apiCount }: ImpactStatsProps) {
           </span>
         </div>
         
-        <p className="text-xs italic leading-relaxed text-indigo-100 font-medium font-sans">
+        <p className="text-xs italic leading-relaxed text-indigo-100 font-medium font-body">
           "{stats.aiSummary}"
         </p>
       </div>
@@ -143,7 +143,7 @@ export default function ImpactStats({ apiCount }: ImpactStatsProps) {
       {/* Predictive Insights (on-demand Gemini forecast) */}
       <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shrink-0">
         <div className="flex justify-between items-center">
-          <h3 className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+          <h3 className="text-xs font-semibold text-slate-600 flex items-center gap-1.5">
             <TrendingUp className="w-3.5 h-3.5 text-lotus" />
             {t("predict.title")}
           </h3>
@@ -208,8 +208,8 @@ export default function ImpactStats({ apiCount }: ImpactStatsProps) {
 
       {/* Community Missions tracker */}
       <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-4 shrink-0">
-        <h3 className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-          <Trophy className="w-3.5 h-3.5 text-orange-500" />
+        <h3 className="text-xs font-semibold text-slate-600 flex items-center gap-1.5">
+          <Trophy className="w-3.5 h-3.5 text-saffron" />
           {t("impact.activeMissions")}
         </h3>
 
@@ -230,20 +230,20 @@ export default function ImpactStats({ apiCount }: ImpactStatsProps) {
                     {mission.description}
                   </p>
                 </div>
-                <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">
+                <span className="text-[10px] font-bold text-saffron bg-saffron/10 px-1.5 py-0.5 rounded border border-saffron/20 shrink-0">
                   +{mission.bonusPoints} {t("impact.karma")}
                 </span>
               </div>
               
               {/* Mission Progress bar */}
               <div className="space-y-1">
-                <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-indigo-600 rounded-full transition-all"
                     style={{ width: `${mission.progress}%` }}
                   />
                 </div>
-                <div className="flex justify-between text-[9px] text-slate-400 font-mono">
+                <div className="flex justify-between text-[9px] text-slate-400">
                   <span>{t("common.progress")}</span>
                   <span className="font-extrabold text-indigo-600">{mission.progress}%</span>
                 </div>

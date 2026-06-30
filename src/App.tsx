@@ -270,14 +270,14 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
 
                           <div className="flex items-center gap-4 shrink-0 text-right">
                             <div className="flex flex-col items-end shrink-0">
-                              <span className="text-[9px] font-mono font-bold text-slate-400 uppercase">{t("app.priority")}</span>
+                              <span className="text-[9px] font-bold text-slate-400 uppercase">{t("app.priority")}</span>
                               <span className={`text-xs font-black ${r.priorityScore >= 80 ? "text-red-500" : r.priorityScore >= 50 ? "text-orange-500" : "text-slate-700"}`}>
                                 {r.priorityScore}%
                               </span>
                             </div>
                             
                             <div className="flex flex-col items-end shrink-0 min-w-[70px]">
-                              <span className="text-[9px] font-mono font-bold text-slate-400 uppercase">{t("app.status")}</span>
+                              <span className="text-[9px] font-bold text-slate-400 uppercase">{t("app.status")}</span>
                               <span className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded leading-none ${
                                 r.status === "Resolved" ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-blue-50 text-blue-700"
                               }`}>
@@ -334,26 +334,35 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
                 </div>
               )}
 
-              {/* Community signal card — mocked forum/Reddit signal (v2 teaser) */}
-              <div className="bg-white rounded-2xl border border-peacock/30 p-4 shrink-0">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[9px] font-extrabold text-peacock uppercase tracking-widest flex items-center gap-1.5">
-                    <Radio className="w-3 h-3 animate-pulse" />
-                    Community Signal
-                  </span>
-                  <span className="text-[8px] font-mono text-slate-400 bg-slate-50 border border-slate-100 px-1.5 py-0.5 rounded uppercase">Simulated</span>
+              {/* Community signal card — passive civic signals feature (coming soon) */}
+              <div className="rounded-2xl border border-peacock/30 overflow-hidden shrink-0">
+                <div className="bg-white px-4 pt-4 pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold text-peacock flex items-center gap-1.5">
+                      <Radio className="w-3 h-3 animate-pulse" />
+                      Community Signal
+                    </span>
+                    <span className="text-[8px] font-mono text-slate-400 bg-slate-50 border border-slate-100 px-1.5 py-0.5 rounded uppercase">Preview</span>
+                  </div>
+                  <p className="text-[11px] font-semibold text-slate-700 leading-snug">
+                    "Waterlogging near Indiranagar 100ft Road is getting worse after last night's rain — auto drivers refusing the stretch."
+                  </p>
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="text-[9px] text-slate-400 font-mono">r/bangalore · 2h ago · 47 upvotes</span>
+                    <button
+                      onClick={() => setIsReporting(true)}
+                      className="text-[9px] font-black uppercase tracking-wider text-peacock hover:underline"
+                    >
+                      File report →
+                    </button>
+                  </div>
                 </div>
-                <p className="text-[11px] font-semibold text-slate-700 leading-snug">
-                  "Waterlogging near Indiranagar 100ft Road is getting worse after last night's rain — auto drivers refusing the stretch."
-                </p>
-                <div className="flex items-center justify-between mt-2.5">
-                  <span className="text-[9px] text-slate-400 font-mono">r/bangalore · 2h ago · 47 upvotes</span>
-                  <button
-                    onClick={() => setIsReporting(true)}
-                    className="text-[9px] font-black uppercase tracking-wider text-peacock hover:underline"
-                  >
-                    File report →
-                  </button>
+                <div className="bg-peacock/5 border-t border-peacock/20 px-4 py-3 space-y-1.5">
+                  <span className="text-[8px] font-black uppercase tracking-widest text-peacock bg-peacock/10 border border-peacock/20 px-1.5 py-0.5 rounded inline-block">Coming Soon</span>
+                  <p className="text-[10px] text-slate-600 leading-snug font-medium">
+                    NammaFix will passively scan city subreddits and public forums, extract civic complaints with Gemini, and ping nearby residents: <span className="font-bold text-slate-800">"We heard about this — can you confirm?"</span>
+                  </p>
+                  <p className="text-[9px] text-slate-400 leading-snug">Not everyone opens an app. This brings their voice in anyway.</p>
                 </div>
               </div>
 

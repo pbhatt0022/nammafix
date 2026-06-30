@@ -352,7 +352,7 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
               </div>
             ) : (
               <label className="border-2 border-dashed border-slate-300 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer bg-slate-50 hover:bg-slate-100/50 transition-all aspect-video">
-                <UploadCloud className="w-10 h-10 text-slate-400 mb-2 animate-bounce" />
+                <UploadCloud className="w-10 h-10 text-slate-400 mb-2 animate-nudge" />
                 <span className="text-xs font-black text-slate-700">{t("report.photo.drop")}</span>
                 <span className="text-[10px] text-slate-400 mt-1 font-mono uppercase">{t("report.photo.max")}</span>
                 <input
