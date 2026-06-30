@@ -12,7 +12,7 @@ NammaFix AI is a Gemini-powered civic resolution platform for Indian neighborhoo
 
 ## Demo Video
 
-https://github.com/pbhatt0022/nammafix/blob/main/brag-output/brag.mp4
+[![NammaFix AI — 20s launch video](docs/screenshots/active-case.png)](https://github.com/pbhatt0022/nammafix/blob/main/brag-output/brag.mp4)
 
 ---
 
