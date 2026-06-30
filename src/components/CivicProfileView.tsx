@@ -3,7 +3,6 @@
  * contribution stats, earned badges (folk stamp seals), and report history.
  * Celebratory, never shaming. Read-only view over existing user + report data.
  */
-import React from "react";
 import { User, Report } from "../types";
 import { useT } from "../i18n";
 import KarmaBadge from "../landing/KarmaBadge";

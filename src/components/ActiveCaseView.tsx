@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Report, StatusEvent, Verification, ResolverCopilotOutput, ClosureVerificationOutput } from "../types";
 import TranslatePacket from "../i18n/TranslatePacket";
 import { useT } from "../i18n";

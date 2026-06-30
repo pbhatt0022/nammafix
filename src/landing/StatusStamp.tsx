@@ -2,7 +2,6 @@
  * Rubber-stamp status label — tilted, dashed ring, ink-on-cream. Used for docket
  * pipeline states and the "AI Docket Ready" closer.
  */
-import React from "react";
 
 const TONES = {
   green: { ring: "#2E7D32", text: "#2E7D32" },

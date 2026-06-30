@@ -6,7 +6,6 @@
  * (e.g. Higgsfield) instead, pass `src`: it renders that image in the same frame and
  * the vector scene is skipped. Call sites never change.
  */
-import React from "react";
 import {
   PotholeIcon, StreetlightIcon, PipeLeakIcon, DrainIcon, AutoIcon, EvidencePacketIcon,
 } from "./DoodleIcons";

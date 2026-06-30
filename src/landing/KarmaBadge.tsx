@@ -2,19 +2,19 @@
  * Civic Karma passbook badge — a scalloped stamp seal with a doodle icon.
  * Renders like a rubber-stamp earned in a contribution passbook, not a social like.
  */
-import React from "react";
+
+import type { ReactNode } from "react";
 
 type Props = {
   label: string;
-  icon: React.ReactNode;
-  tone?: string;       // accent color for the seal ring + icon tint
-  earned?: boolean;    // dimmed + "locked" feel when false
+  icon: ReactNode;
+  tone?: string;
   className?: string;
 };
 
-export default function KarmaBadge({ label, icon, tone = "#F97316", earned = true, className = "" }: Props) {
+export default function KarmaBadge({ label, icon, tone = "#F97316", className = "" }: Props) {
   return (
-    <div className={`flex flex-col items-center gap-2 text-center ${earned ? "" : "opacity-45 grayscale"} ${className}`}>
+    <div className={`flex flex-col items-center gap-2 text-center ${className}`}>
       <div className="relative h-20 w-20">
         {/* scalloped seal */}
         <svg viewBox="0 0 80 80" className="absolute inset-0 h-full w-full" aria-hidden="true">

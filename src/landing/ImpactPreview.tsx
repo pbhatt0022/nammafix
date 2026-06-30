@@ -2,7 +2,6 @@
  * Ward civic-health bento. Cleaner / more dashboard-like than the rest of the page —
  * folk accents kept to header badges and the monsoon mission tile only.
  */
-import React from "react";
 import { CloudRain } from "lucide-react";
 
 type Metric = { label: string; value: string; sub: string; tone: string };

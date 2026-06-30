@@ -3,7 +3,7 @@
  * server, no Gemini quota. Recognition language follows the selected UI language
  * (so a citizen can dictate in Kannada/Hindi/etc.). Hidden when unsupported.
  */
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Mic } from "lucide-react";
 import { useT, LangCode } from "./index";
 

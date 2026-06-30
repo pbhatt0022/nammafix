@@ -4,7 +4,8 @@
  * (see scripts/gen-i18n.mjs) so runtime lookups are instant and offline.
  * Dynamic AI content is translated live via /api/translate instead.
  */
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import en from "./en.json";
 import generated from "./translations.json";
 
@@ -26,7 +27,7 @@ const DICTS: Record<string, Record<string, string>> = { en, ...(generated as Rec
 type Ctx = { lang: LangCode; setLang: (l: LangCode) => void; t: (key: string) => string };
 const LangContext = createContext<Ctx>({ lang: "en", setLang: () => {}, t: (k) => k });
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
+export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<LangCode>(() => {
     const saved = typeof localStorage !== "undefined" ? localStorage.getItem("nammafix.lang") : null;
     return (saved as LangCode) || "en";

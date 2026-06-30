@@ -3,7 +3,7 @@
  * with an unread badge; opening it lists resolutions with before/after proof and
  * deep-links to the report. Pops a celebratory toast when a new resolution lands.
  */
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Bell, CheckCircle2, X } from "lucide-react";
 import { useT } from "../i18n";
 

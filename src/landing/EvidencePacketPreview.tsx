@@ -1,27 +1,8 @@
-/**
- * AI Evidence Packet — a municipal docket slip. Dashed folk border, rubber-stamp
- * header, Gemini-generated fields with clean hierarchy. Centerpiece of the page.
- *
- * Content is data-driven so the same card can render a live packet later.
- */
-import React from "react";
 import { Sparkles } from "lucide-react";
 import StatusStamp from "./StatusStamp";
 import { EvidencePacketIcon } from "./DoodleIcons";
 
-export type EvidencePacket = {
-  reportId: string;
-  category: string;
-  severity: string;
-  confidence: number;
-  observedEvidence: string;
-  publicRisk: string;
-  suggestedResolver: string;
-  missingDetails: string;
-  nextAction: string;
-};
-
-const DEMO: EvidencePacket = {
+const DEMO = {
   reportId: "NF-102",
   category: "Road Damage / Pothole",
   severity: "High",
@@ -44,17 +25,18 @@ function Field({ label, value, accent }: { label: string; value: string; accent?
   );
 }
 
-export default function EvidencePacketPreview({ packet = DEMO, className = "" }: { packet?: EvidencePacket; className?: string }) {
+export default function EvidencePacketPreview({ className = "" }: { className?: string }) {
+  const packet = DEMO;
   return (
     <div
       className={`relative rounded-2xl border-2 border-dashed border-ink/40 bg-cream p-5 shadow-[6px_6px_0_0_rgba(58,31,27,0.12)] sm:p-7 ${className}`}
     >
       {/* perforation dots top edge */}
-      <div className="pointer-events-none absolute -top-1.5 left-6 right-6 flex justify-between" aria-hidden="true">
-        {Array.from({ length: 14 }).map((_, i) => (
-          <span key={i} className="h-2.5 w-2.5 rounded-full bg-cream ring-2 ring-ink/25" />
-        ))}
-      </div>
+      <div
+        className="pointer-events-none absolute -top-[5px] left-6 right-6 h-2.5"
+        aria-hidden="true"
+        style={{ backgroundImage: "radial-gradient(circle, rgba(58,31,27,0.25) 40%, transparent 41%)", backgroundSize: "18px 10px", backgroundRepeat: "repeat-x" }}
+      />
 
       {/* header row */}
       <div className="mb-4 flex items-start justify-between gap-3 border-b-2 border-dotted border-ink/25 pb-4">

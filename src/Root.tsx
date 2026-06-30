@@ -3,7 +3,7 @@
  * existing dashboard app. Landing CTAs deep-link into the app; the app's logo
  * returns home. No backend or app logic changes.
  */
-import React, { useState } from "react";
+import { useState } from "react";
 import Landing from "./landing/Landing";
 import App from "./App";
 import { LanguageProvider } from "./i18n";

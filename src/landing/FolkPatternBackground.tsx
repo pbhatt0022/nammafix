@@ -3,7 +3,6 @@
  * (default opacity 0.06) so it never sits behind body text at full strength.
  * Tiles via an SVG <pattern>, so it's resolution-independent and one element.
  */
-import React from "react";
 
 type Props = {
   className?: string;

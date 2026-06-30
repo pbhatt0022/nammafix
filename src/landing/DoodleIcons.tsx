@@ -3,14 +3,15 @@
  * Drawn as vectors so they stay crisp and on-palette. To swap in generated raster
  * assets later, replace any icon body with <image href={asset} .../> — call sites are unchanged.
  */
-import React from "react";
+
+import type { ReactNode } from "react";
 
 const INK = "#3A1F1B";
 
 type IconProps = { className?: string; title?: string };
 
 // Shared <svg> wrapper: square viewBox, round joins, ink stroke by default.
-function Svg({ className, title, children }: IconProps & { children: React.ReactNode }) {
+function Svg({ className, title, children }: IconProps & { children: ReactNode }) {
   return (
     <svg
       viewBox="0 0 64 64"

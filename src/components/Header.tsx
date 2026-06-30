@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from "react";
 import { User } from "../types";
 import { ShieldAlert, Award, Compass, MapPin, UserCheck } from "lucide-react";
 import { useT } from "../i18n";

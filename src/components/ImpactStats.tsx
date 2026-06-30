@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Mission } from "../types";
 import { Sparkles, Trophy, Target, Activity, TrendingUp, CloudRain, Loader2 } from "lucide-react";
 import { useT } from "../i18n";

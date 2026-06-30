@@ -3,7 +3,7 @@
  * currently-selected language. Hidden when the language is English (nothing to do).
  * UI chrome is handled by static strings (useT); this is only for dynamic AI text.
  */
-import React, { useState } from "react";
+import { useState } from "react";
 import { Languages, Loader2, AlertCircle } from "lucide-react";
 import { useT, LANGUAGES } from "./index";
 

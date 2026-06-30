@@ -5,7 +5,7 @@
 > for *why* things are the way they are see [DECISIONS.md](DECISIONS.md); for the long-term
 > north star (incl. ambitious / out-of-scope ideas) see [VISION.md](VISION.md).
 
-Last reviewed: 2026-06-27.
+Last reviewed: 2026-06-30.
 
 ## What this is
 
@@ -62,7 +62,7 @@ src/
   data/mockReports.ts           Seed: initialReports/Users/StatusEvents/Verifications/Missions
   i18n/                         Translation + voice (added 2026-06-27)
     index.tsx                   LanguageProvider + useT() hook + LANGUAGES (7 langs, native scripts)
-    en.json                     Canonical English UI strings (source of truth, ~180 keys)
+    en.json                     Canonical English UI strings (source of truth, ~230 keys)
     translations.json           Gemini-generated translations for the other 6 languages (static)
     LanguageSelector.tsx        Native <select> language switcher (landing + app header)
     TranslatePacket.tsx         Live Gemini translation of an AI Evidence Packet's content
@@ -112,22 +112,37 @@ keyword), the mock `RESOLVER_DIRECTORY` + `lookupWard()` + `routeReport()` (auto
 
 ## Status snapshot
 
-**Working:** landing page; citizen report → Evidence Packet; **real duplicate detection** on submit;
-**auto-routing → Civic Dispatch Ticket** (dept + ward + SLA); resolver copilot; before/after closure
-verify; impact stats; verification + karma + badges + missions; status timeline; ops queue with
-filters; map/list view; **app-wide i18n** (7 languages across landing + every dashboard screen);
-**voice input** (mic on report description/landmark + verification comment); live AI-content
-translation. Folk-tech design is cohesive across landing + dashboard. Gemini key is live.
+**Working (as of 2026-06-30):**
+- Landing page (8-section folk-tech, fully i18n'd)
+- Citizen report → AI Evidence Packet (Gemini multimodal)
+- Pre-flight duplicate detection (Haversine + category + keyword, no Gemini quota)
+- Duplicate cluster merge flow (evidence added to existing report, karma awarded)
+- Auto-routing → Civic Dispatch Ticket (dept + ward + SLA + dispatch note)
+- Resolver Copilot (Gemini routing note + SLA risk)
+- Before/after closure verification (Gemini multimodal comparison)
+- Impact stats + on-demand Predictive Forecast (Gemini hotspot + seasonal risk)
+- Notification bell + resolution toast (citizen resolution loop)
+- Civic Karma Passbook (rank, badges, contribution history)
+- Community verification + karma + badges + missions
+- Status timeline; ops queue with category + status filters
+- Leaflet map with heatmap toggle + markercluster (pins mode)
+- App-wide i18n: 7 languages, 230 keys, across landing + every dashboard screen
+- Voice input (mic on description, landmark, verification comment)
+- Live AI-content translation (TranslatePacket)
+- Error boundary (friendly recovery card on crash)
+- Mobile-responsive layout across all screens
+- Folk-tech design cohesive across landing + dashboard (single @theme remap)
 
 **Known gaps / open risks:**
-- **Latest build not deployed yet** — the live AI Studio URL is behind; needs a re-sync + re-deploy.
-  (First deploy succeeded; the deploy path works — see DECISIONS / PLAN.)
-- **Google Doc** submission asset not written yet.
-- **Gemini free-tier quota = 20 requests/day** on the current `AQ.` key — exhausts fast under
-  judging. Enable pay-as-you-go billing and/or use an `AIzaSy…` key (PLAN risk #1).
+- **Latest build not deployed** — the live AI Studio URL lags behind the committed code.
+  Re-deploy needed: build a ZIP and upload via AI Studio Publish.
+- **Gemini free-tier quota = 20 requests/day** on the current key — exhausts fast under judging.
+  Enable pay-as-you-go billing before submitting.
+- **Google Doc** submission asset (5 required sections) not yet written.
 - **Gemini JSON parsing** has limited fallback if the model returns malformed JSON.
 - In-memory store resets on restart (by design — see DECISIONS).
 - Voice input is Web Speech (Chrome/Edge best; partial Safari; absent in Firefox — button hides).
+- Routing is a mock resolver directory (clearly disclosed in UI — see D-008).
 
 ## Gotchas
 

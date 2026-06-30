@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from "react";
+import { useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { UploadCloud, Cpu, AlertCircle, Flame, Copy } from "lucide-react";
 import { Report } from "../types";
 import { useT } from "../i18n";
@@ -77,7 +78,7 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
   };
 
   // Convert custom file upload to base64
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -119,7 +120,7 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
   };
 
   // Trigger Gemini API Analysis Flow. `forceNew` skips the duplicate pre-flight.
-  const handleSubmit = async (e: React.FormEvent | null, forceNew = false) => {
+  const handleSubmit = async (e: FormEvent | null, forceNew = false) => {
     if (e) e.preventDefault();
     if (!imageUrl) {
       setError(t("err.photoRequired"));

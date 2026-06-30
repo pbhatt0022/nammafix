@@ -3,8 +3,8 @@
  * Scroll page that fronts the existing dashboard app. CTAs call onEnter to deep-link
  * into the app (report flow or community map). No app logic lives here.
  */
-import React from "react";
 import { motion } from "motion/react";
+import type { ReactNode } from "react";
 import {
   ArrowRight, MapPin, Camera, Copy, Layers, ShieldCheck, Sparkles, Eye, Plus, RefreshCw,
 } from "lucide-react";
@@ -256,7 +256,7 @@ function SectionHeading({ kicker, title, center = false }: { kicker: string; tit
   );
 }
 
-function PainCard({ icon, title, body, tone }: { icon: React.ReactNode; title: string; body: string; tone: string }) {
+function PainCard({ icon, title, body, tone }: { icon: ReactNode; title: string; body: string; tone: string }) {
   return (
     <motion.div {...rise} className="rounded-2xl border-2 border-ink/15 bg-white p-6 shadow-[4px_4px_0_0_rgba(58,31,27,0.08)]">
       <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl" style={{ background: `${tone}1a`, color: tone }}>
