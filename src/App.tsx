@@ -304,7 +304,7 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
             </div>
 
             {/* RIGHT COLUMN: TIMELINE, STATS & QUICK ACTIONS (2/5 WIDTH) */}
-            <div className="w-full lg:w-2/5 flex flex-col gap-6 lg:h-full lg:overflow-hidden shrink-0">
+            <div className="w-full lg:w-2/5 flex flex-col gap-6 lg:h-full lg:overflow-y-auto shrink-0">
               {/* Resolution Pipeline Timeline */}
               {selectedReport && (
                 <div className="bg-white rounded-2xl border border-slate-200 p-5 flex flex-col max-h-[220px] shrink-0 overflow-hidden">
@@ -377,9 +377,7 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
               </div>
 
               {/* Impact stats and bento metrics */}
-              <div className="flex-1 overflow-y-auto pr-1">
-                <ImpactStats apiCount={apiCount} />
-              </div>
+              <ImpactStats apiCount={apiCount} />
 
               {/* Action Quick Bar */}
               <div className="grid grid-cols-2 gap-3 shrink-0">
