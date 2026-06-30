@@ -128,7 +128,7 @@
   "case.scenario": "Scenario",
 
   "common.progress": "Progress",
-  "common.live": "Live",
+  "common.live": "Current",
 
   "app.empty": "No report selected. Choose one below or submit a new case.",
   "app.queue": "BBMP Ward 89 Operations Queue",

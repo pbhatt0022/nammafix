@@ -37,13 +37,18 @@ export default function Landing({ onEnter }: { onEnter: (intent: Intent) => void
       {/* ---- top bar ---- */}
       <header className="sticky top-0 z-30 border-b-2 border-ink/10 bg-cream/85 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigoc font-display text-sm font-extrabold text-marigold shadow-sm">NF</div>
+          <div className="flex items-center gap-3">
+            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full shadow-md"
+              style={{ background: "linear-gradient(145deg, #2e4fa3 0%, #162347 100%)" }}>
+              <MapPin className="h-5 w-5 text-marigold" strokeWidth={2.5} />
+              <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-cream bg-saffron" />
+            </div>
             <div className="leading-none">
-              <div className="font-display text-lg font-extrabold tracking-tight text-indigoc">
-                NammaFix <span className="text-saffron">AI</span>
+              <div className="flex items-center gap-1.5">
+                <span className="font-display text-[18px] font-black tracking-tight text-indigoc">NammaFix</span>
+                <span className="rounded-full bg-saffron px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wide text-white">AI</span>
               </div>
-              <div className="font-mono text-[9px] uppercase tracking-widest text-ink/45">Civic Resolution Layer</div>
+              <div className="mt-0.5 text-[8px] font-semibold uppercase tracking-[0.18em] text-ink/30">Civic Resolution Layer</div>
             </div>
           </div>
           <div className="flex items-center gap-2">

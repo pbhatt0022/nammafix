@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { UploadCloud, Cpu, AlertCircle, Flame, Copy } from "lucide-react";
 import { Report } from "../types";
@@ -14,6 +14,9 @@ interface ReportIssueViewProps {
   onSuccess: (newReport: Report) => void;
   onCancel: () => void;
   incrementApiCount: () => void;
+  initialLat?: number;
+  initialLng?: number;
+  initialLandmark?: string;
 }
 
 // Preset Bangalore demo scenarios for rapid judging convenience
@@ -47,14 +50,14 @@ const BANGALORE_PRESETS = [
   }
 ];
 
-export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount }: ReportIssueViewProps) {
+export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount, initialLat, initialLng, initialLandmark }: ReportIssueViewProps) {
   const { t } = useT();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Road Damage");
-  const [landmark, setLandmark] = useState("");
-  const [latitude, setLatitude] = useState(12.9716);
-  const [longitude, setLongitude] = useState(77.5946);
+  const [landmark, setLandmark] = useState(initialLandmark ?? "");
+  const [latitude, setLatitude] = useState(initialLat ?? 12.9716);
+  const [longitude, setLongitude] = useState(initialLng ?? 77.5946);
   const [imageUrl, setImageUrl] = useState("");
   
   const [loading, setLoading] = useState(false);
@@ -64,6 +67,14 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
   // Duplicate pre-flight gate: candidates found before filing, and merge progress.
   const [dupCandidates, setDupCandidates] = useState<any[] | null>(null);
   const [merging, setMerging] = useState(false);
+
+  // If the user starts a report from the map after this component has mounted,
+  // sync the picked location into the form fields.
+  useEffect(() => {
+    if (typeof initialLat === "number") setLatitude(initialLat);
+    if (typeof initialLng === "number") setLongitude(initialLng);
+    if (typeof initialLandmark === "string") setLandmark(initialLandmark);
+  }, [initialLat, initialLng, initialLandmark]);
 
   // Select a pre-packaged Bangalore scenario
   const handleSelectPreset = (preset: typeof BANGALORE_PRESETS[0]) => {
@@ -263,7 +274,7 @@ export default function ReportIssueView({ onSuccess, onCancel, incrementApiCount
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="font-mono text-[9px] font-extrabold text-slate-400">#{d.id}</span>
                     <span className="text-[8px] font-bold uppercase px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700">{t("enum.cat." + d.category)}</span>
-                    <span className="text-[9px] font-bold text-emerald-600">{Math.round((d.similarity || 0) * 100)}% {t("dup.similar")}</span>
+                    <span className="text-[9px] font-bold text-emerald-600">{Math.round(d.similarity || 0)}% {t("dup.similar")}</span>
                   </div>
                   <p className="text-xs font-bold text-slate-800 truncate">{d.title}</p>
                   <p className="text-[10px] text-slate-400 font-mono truncate">{d.landmark}</p>

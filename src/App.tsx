@@ -5,7 +5,6 @@
 
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
-import Footer from "./components/Footer";
 import ActiveCaseView from "./components/ActiveCaseView";
 import ReportIssueView from "./components/ReportIssueView";
 import CommunityMapView from "./components/CommunityMapView";
@@ -31,6 +30,7 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
 
   const [activeTab, setActiveTab] = useState(initialTab); // "dashboard" | "map" | "missions"
   const [isReporting, setIsReporting] = useState(startReporting);
+  const [reportLocation, setReportLocation] = useState<{ lat: number; lng: number; landmark: string } | null>(null);
   
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -117,9 +117,16 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
   // On successful issue creation
   const handleReportSuccess = (newReport: Report) => {
     setIsReporting(false);
+    setReportLocation(null);
     incrementApiCount();
     setSelectedReport(newReport);
     fetchReportDetails(newReport.id);
+  };
+
+  const handleStartReportFromMap = (lat: number, lng: number, landmark: string) => {
+    setReportLocation({ lat, lng, landmark });
+    setActiveTab("dashboard");
+    setIsReporting(true);
   };
 
   // Filtered reports
@@ -169,8 +176,11 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
               {isReporting ? (
                 <ReportIssueView
                   onSuccess={handleReportSuccess}
-                  onCancel={() => setIsReporting(false)}
+                  onCancel={() => { setIsReporting(false); setReportLocation(null); }}
                   incrementApiCount={incrementApiCount}
+                  initialLat={reportLocation?.lat}
+                  initialLng={reportLocation?.lng}
+                  initialLandmark={reportLocation?.landmark}
                 />
               ) : selectedReport ? (
                 <ActiveCaseView
@@ -192,14 +202,14 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
                 {/* Section Header */}
                 <div className="flex justify-between items-center pb-3 border-b border-slate-100 mb-3 shrink-0">
                   <div className="flex items-center gap-2">
-                    <ClipboardList className="w-4 h-4 text-slate-500" />
-                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest">
-                      {t("app.queue")} ({filteredReports.length})
+                    <ClipboardList className="w-4 h-4 text-slate-400" />
+                    <span className="text-xs font-semibold text-slate-700">
+                      {t("app.queue")} <span className="text-slate-400 font-normal">({filteredReports.length})</span>
                     </span>
                   </div>
 
                   {/* Filter panel */}
-                  <div className="flex items-center gap-2 text-[10px] font-mono">
+                  <div className="flex items-center gap-2 text-[10px]">
                     <Filter className="w-3 h-3 text-slate-400" />
                     <select
                       value={categoryFilter}
@@ -279,7 +289,7 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
                             <div className="flex flex-col items-end shrink-0 min-w-[70px]">
                               <span className="text-[9px] font-bold text-slate-400 uppercase">{t("app.status")}</span>
                               <span className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded leading-none ${
-                                r.status === "Resolved" ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-blue-50 text-blue-700"
+                                r.status === "Resolved" ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-indigo-50 text-indigo-700 border border-indigo-100"
                               }`}>
                                 {t("enum.status." + r.status)}
                               </span>
@@ -298,7 +308,7 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
               {/* Resolution Pipeline Timeline */}
               {selectedReport && (
                 <div className="bg-white rounded-2xl border border-slate-200 p-5 flex flex-col max-h-[220px] shrink-0 overflow-hidden">
-                  <h3 className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-1.5 shrink-0">
+                  <h3 className="text-xs font-semibold text-slate-600 mb-4 flex items-center gap-1.5 shrink-0">
                     <Clock className="w-3.5 h-3.5" />
                     {t("app.timeline")}
                   </h3>
@@ -351,7 +361,7 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
                     <span className="text-[9px] text-slate-400 font-mono">r/bangalore · 2h ago · 47 upvotes</span>
                     <button
                       onClick={() => setIsReporting(true)}
-                      className="text-[9px] font-black uppercase tracking-wider text-peacock hover:underline"
+                      className="text-[10px] font-black text-peacock bg-peacock/10 hover:bg-peacock/20 border border-peacock/20 px-2.5 py-1 rounded-lg transition-colors"
                     >
                       File report →
                     </button>
@@ -375,17 +385,17 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
               <div className="grid grid-cols-2 gap-3 shrink-0">
                 <button
                   onClick={() => setIsReporting(true)}
-                  className="p-3 bg-white border border-slate-200 rounded-xl text-center hover:bg-slate-50 transition-all flex flex-col items-center justify-center gap-1 group"
+                  className="p-3 bg-saffron hover:bg-orange-500 text-white rounded-xl text-center transition-all flex flex-col items-center justify-center gap-1 group shadow-sm"
                 >
-                  <PlusCircle className="w-5 h-5 text-indigo-600 group-hover:scale-110 transition-all" />
-                  <span className="text-[9px] font-extrabold uppercase text-slate-500 tracking-wider">{t("app.quick.report")}</span>
+                  <PlusCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <span className="text-[9px] font-extrabold uppercase tracking-wider">{t("app.quick.report")}</span>
                 </button>
                 <button
                   onClick={() => setActiveTab("map")}
                   className="p-3 bg-white border border-slate-200 rounded-xl text-center hover:bg-slate-50 transition-all flex flex-col items-center justify-center gap-1 group"
                 >
-                  <Navigation className="w-5 h-5 text-slate-600 group-hover:scale-110 transition-all" />
-                  <span className="text-[9px] font-extrabold uppercase text-slate-500 tracking-wider">{t("app.quick.map")}</span>
+                  <Navigation className="w-5 h-5 text-peacock group-hover:scale-110 transition-transform" />
+                  <span className="text-[9px] font-extrabold uppercase text-slate-600 tracking-wider">{t("app.quick.map")}</span>
                 </button>
               </div>
             </div>
@@ -401,6 +411,7 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
               handleSelectReport(r);
               setActiveTab("dashboard");
             }}
+            onStartReport={handleStartReportFromMap}
           />
         )}
 
@@ -438,8 +449,6 @@ export default function App({ initialTab = "dashboard", startReporting = false, 
         )}
       </main>
 
-      {/* Footer component */}
-      <Footer apiCount={apiCount} />
     </div>
   );
 }

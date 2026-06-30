@@ -25,25 +25,28 @@ export default function Header({ currentUser, activeTab, setActiveTab, onHome, n
     <header className="h-16 flex items-center justify-between gap-2 px-4 sm:px-6 bg-cream border-b-2 border-ink/10 shrink-0">
       {/* Branding Logo — click to return to the landing page */}
       <button onClick={onHome} title={t("common.home")} className="flex items-center gap-3 text-left shrink-0">
-
-        <div className="w-9 h-9 bg-indigoc rounded-lg flex items-center justify-center text-marigold font-display font-extrabold shadow-sm">
-          NF
+        {/* Badge: pin inside a civic-indigo circle */}
+        <div className="relative w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-md"
+          style={{ background: "linear-gradient(145deg, #2e4fa3 0%, #162347 100%)" }}>
+          <MapPin className="w-5 h-5 text-marigold" strokeWidth={2.5} />
+          <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-saffron border-2 border-cream" />
         </div>
         <div className="hidden sm:flex flex-col">
-          <span className="text-lg font-display font-extrabold tracking-tight text-indigoc leading-none">
-            NammaFix <span className="text-saffron">AI</span>
-          </span>
-          <span className="text-[10px] font-mono tracking-wider text-ink/45 uppercase mt-0.5">
+          <div className="flex items-center gap-1.5 leading-none">
+            <span className="text-[18px] font-display font-black tracking-tight text-indigoc">NammaFix</span>
+            <span className="text-[9px] font-black bg-saffron text-white px-1.5 py-0.5 rounded-full tracking-wide uppercase">AI</span>
+          </div>
+          <span className="text-[8px] font-semibold tracking-[0.18em] text-ink/30 uppercase mt-0.5">
             Civic Resolution Layer
           </span>
         </div>
       </button>
 
       {/* Navigation Links */}
-      <nav className="flex items-center gap-2 sm:gap-6 text-sm font-medium h-full overflow-x-auto">
+      <nav className="flex items-center gap-2 sm:gap-6 text-sm font-medium h-full overflow-x-auto shrink min-w-0">
         <button
           onClick={() => setActiveTab("dashboard")}
-          className={`h-full flex items-center px-2 border-b-2 font-semibold transition-all ${
+          className={`h-full flex items-center px-2 border-b-2 font-semibold transition-all whitespace-nowrap shrink-0 ${
             activeTab === "dashboard"
               ? "text-saffron border-saffron"
               : "text-ink/55 border-transparent hover:text-ink"
@@ -54,7 +57,7 @@ export default function Header({ currentUser, activeTab, setActiveTab, onHome, n
         </button>
         <button
           onClick={() => setActiveTab("map")}
-          className={`h-full flex items-center px-2 border-b-2 font-semibold transition-all ${
+          className={`h-full flex items-center px-2 border-b-2 font-semibold transition-all whitespace-nowrap shrink-0 ${
             activeTab === "map"
               ? "text-saffron border-saffron"
               : "text-ink/55 border-transparent hover:text-ink"
@@ -65,7 +68,7 @@ export default function Header({ currentUser, activeTab, setActiveTab, onHome, n
         </button>
         <button
           onClick={() => setActiveTab("missions")}
-          className={`h-full flex items-center px-2 border-b-2 font-semibold transition-all ${
+          className={`h-full flex items-center px-2 border-b-2 font-semibold transition-all whitespace-nowrap shrink-0 ${
             activeTab === "missions"
               ? "text-saffron border-saffron"
               : "text-ink/55 border-transparent hover:text-ink"

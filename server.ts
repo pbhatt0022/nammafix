@@ -276,7 +276,7 @@ app.post("/api/reports", async (req, res) => {
         });
 
         const rawText = response.text ? response.text.trim() : "";
-        console.log("Raw Gemini Response received:", rawText);
+        // ponytail: removed raw dump; keep error logging in catch above
         
         aiOutput = safeJSON(rawText);
       } catch (geminiError) {

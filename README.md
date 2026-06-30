@@ -15,6 +15,7 @@ NammaFix AI is a Gemini-powered civic resolution platform for Indian neighborhoo
 - **6 Gemini-powered product flows** across intake, copilot, closure audit, translation, insights, and forecasting
 - **7-language UI** for Indian users, plus live AI-content translation
 - **Duplicate detection before filing** to reduce civic spam and cluster evidence
+- **Map-first click-to-report flow** with place search, reverse geocoding, and prefilled report creation
 - **Before/after closure verification** instead of trusting a manual "fixed" label
 - **Voice input** for faster reporting in supported browsers
 - **Predictive ward forecast** for hotspot and seasonal-risk detection
@@ -96,7 +97,7 @@ Every report gets a **routing ticket** with:
 - SLA
 - dispatch note
 
-This is currently powered by a mock Bengaluru resolver directory in code, which keeps the demo reliable while still showing the full resolver workflow.
+NammaFix makes an **agentic routing decision automatically** and produces a **resolver-ready dispatch ticket**. In this MVP, the final handoff into live municipal systems is simulated.
 
 ### 4. Community Verification Loop
 Neighbors can confirm, flag, or add photo-based evidence. Verification raises the confidence and priority of real issues and helps move them toward action.
@@ -141,8 +142,20 @@ NammaFix supports:
 - 7-language UI
 - live AI-content translation
 - voice input for report fields
+- map-first reporting by clicking a location and starting a prefilled issue from there
 - mobile-first reporting flow
 - an Indian folk-tech visual identity instead of generic SaaS styling
+
+### 10. Map-First Report Creation
+NammaFix now supports a more natural reporting flow directly from the map:
+
+- floating place search over the live civic map
+- India-focused location search results
+- click anywhere on the map to drop a report pin
+- reverse-geocoded landmark lookup
+- one-click handoff into the report form with prefilled coordinates and place name
+
+This makes the app feel much closer to how real citizens think: first identify the place, then file the issue.
 
 ---
 
@@ -257,14 +270,15 @@ Citizen Photo + Description
 For a 3-4 minute hackathon demo:
 
 1. Start on the landing page and switch the UI language.
-2. Report a civic issue with an image.
-3. Show the generated AI Evidence Packet.
-4. Demonstrate duplicate detection by trying a nearby similar report.
-5. Add a community verification.
-6. Open the resolver copilot output.
-7. Upload closure proof and show the before/after Gemini audit.
-8. Open the Civic Karma profile and impact dashboard.
-9. Run the hotspot forecast.
+2. Open the map, search a place or click a point on the map, and launch a report from that location.
+3. Report a civic issue with an image.
+4. Show the generated AI Evidence Packet.
+5. Demonstrate duplicate detection by trying a nearby similar report.
+6. Add a community verification.
+7. Open the resolver copilot output.
+8. Upload closure proof and show the before/after Gemini audit.
+9. Open the Civic Karma profile and impact dashboard.
+10. Run the hotspot forecast.
 
 ---
 
@@ -291,7 +305,7 @@ If no real Gemini key is present, NammaFix falls back to **Simulated AI Mode** s
 
 ## Honest Boundaries
 
-- **Routing is mock-backed today.** The app generates resolver-ready civic dispatch tickets, but does not yet submit into live BBMP/BWSSB/BESCOM systems.
+- **Routing is agentic, but handoff is simulated.** NammaFix makes an agentic routing decision automatically and produces a resolver-ready dispatch ticket, but does not yet submit into live BBMP/BWSSB/BESCOM systems.
 - **Data is in-memory.** Reports reset on restart to keep the demo stable and setup-free.
 - **Voice input depends on browser support.** Best on Chrome/Edge.
 - **The live product is Bengaluru-shaped today.** The workflow is extensible, but current routing logic is optimized for the hackathon demo.
@@ -320,6 +334,17 @@ These are deliberate MVP boundaries, not hidden limitations.
   Strengthen report authenticity with metadata checks, image provenance signals, optional privacy protections like face/plate blurring, and stronger audit trails for closure proof.
 - **Community missions and neighborhood campaigns**  
   Extend Civic Karma into structured hyperlocal missions such as "Drain Watch Week" or "School Safety Route Audit" so residents can collaborate around preventive civic action, not only report isolated complaints.
+
+---
+
+## Acknowledgements
+
+This project was built with help from open-source tools, MCPs, and design inspiration that shaped both the engineering process and the product experience:
+
+- [Ponytail](https://github.com/DietrichGebert/ponytail) for pushing the build toward simpler, higher-signal decisions and avoiding unnecessary complexity.
+- [Playwright](https://playwright.dev/) and [Playwright MCP](https://playwright.dev/) for browser automation, UI verification, and fast end-to-end iteration during development.
+- [Impeccable](https://impeccable.style/) for product and design quality guidance across polish, structure, and usability.
+- [Emil Kowalski](https://emilkowal.ski/) for UI and interaction inspiration, especially around taste, motion, and interface clarity.
 
 ---
 
